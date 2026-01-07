@@ -1,0 +1,13 @@
+@import "tailwindcss";
+:root {
+  --dark-green: #2d5a27;
+  --light-green: #628141;
+  --hero-bg: #fbfff1;
+}
+
+body {
+  font-family: "League Spartan";
+  background-color: #fbfff1;
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,14 @@
+<svg viewBox="0 0 1456 1092" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lock shackle (top curved part) -->
+  <path d="M 475 55 Q 475 0 530 0 L 925 0 Q 980 0 980 55 L 980 250 Q 980 290 940 290 L 890 290 L 890 145 Q 890 85 850 85 L 605 85 Q 565 85 565 145 L 565 290 L 515 290 Q 475 290 475 250 Z" 
+        fill="#3d4555"/>
+  
+  <!-- Lock body - orange band -->
+  <rect x="340" y="200" width="775" height="185" rx="45" fill="#d67f36"/>
+  
+  <!-- Lock body - green band -->
+  <rect x="340" y="415" width="775" height="185" rx="0" fill="#6b8454"/>
+  
+  <!-- Lock body - beige/tan band -->
+  <rect x="340" y="633" width="775" height="185" rx="45" fill="#d4b579"/>
+</svg>
