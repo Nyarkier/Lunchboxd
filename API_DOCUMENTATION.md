@@ -33,7 +33,7 @@ User account information for authentication and profile management.
   "username": "string (unique)",
   "email": "string (unique)",
   "password": "string (hashed on backend)",
-  "mobile": "string (optional)",
+  "mobile": "string (mobile-num)",
   "avatar": "string or null (optional, URL or base64)",
   "createdAt": "ISO 8601 timestamp (optional)"
 }
