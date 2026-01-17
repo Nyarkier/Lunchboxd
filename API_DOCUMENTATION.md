@@ -33,7 +33,7 @@ User account information for authentication and profile management.
   "username": "string (unique)",
   "email": "string (unique)",
   "password": "string (hashed on backend)",
-  "mobile": "string (mobile-num)",
+  "mobile": "string (optional)",
   "avatar": "string or null (optional, URL or base64)",
   "createdAt": "ISO 8601 timestamp (optional)"
 }
@@ -64,9 +64,12 @@ Restaurant information displayed throughout the application.
   "cuisine": "string (e.g., 'Rice Meal', 'Cafe', 'Chicken', 'Fast Food')",
   "rating": "number (0-5 scale, e.g., 4.5)",
   "location": "string (street address)",
-  "priceRange": "string (e.g., '₱10-50', '₱50-150', '₱150-300')",
+  "budgetRange": "string (one of: '10-50', '50-150', '150-500', '500-1000')",
+  "type": "string (optional, one of: 'Food', 'Drink')",
+  "paymentMode": "array of strings (optional, e.g., ['Cash', 'GCash'])",
   "sides": "enum (see Side enum below)",
-  "image": "string or null (URL or base64 image)"
+  "profileImage": "string or null (URL or base64 image - restaurant profile picture)",
+  "menuImages": "array of strings (URLs or base64 images - variable number of menu pictures)"
 }
 ```
 
@@ -89,9 +92,16 @@ Restaurant information displayed throughout the application.
   "cuisine": "Rice Meal",
   "rating": 4.5,
   "location": "108 Nori, Mabini Extension",
-  "priceRange": "₱10-50",
+  "budgetRange": "10-50",
+  "type": "Food",
+  "paymentMode": ["Cash", "GCash"],
   "sides": "Main Gate",
-  "image": null
+  "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+  "menuImages": [
+    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop"
+  ]
 }
 ```
 
@@ -177,7 +187,7 @@ GET /restaurants?search=query&category=cuisine&budgets=₱,₱₱&sides=Main Gat
 
 - `search` (optional): Search by restaurant name, cuisine, or location
 - `category` (optional): Filter by cuisine type
-- `budgets` (optional): Comma-separated price ranges (₱10-50, ₱50-150, etc.)
+- `budgets` (optional): Comma-separated budget ranges (10-50, 50-150, 150-500, 500-1000)
 - `sides` (optional): Comma-separated gate locations
 
 **Response:**
@@ -193,7 +203,11 @@ GET /restaurants?search=query&category=cuisine&budgets=₱,₱₱&sides=Main Gat
       "location": "108 Nori, Mabini Extension",
       "priceRange": "₱10-50",
       "sides": "Main Gate",
-      "image": null
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      ]
     },
     ...
   ]
@@ -226,7 +240,11 @@ GET /restaurants/{restaurantId}
     "location": "108 Nori, Mabini Extension",
     "priceRange": "₱10-50",
     "sides": "Main Gate",
-    "image": null
+    "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+    "menuImages": [
+      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+    ]
   }
 }
 ```
@@ -395,7 +413,11 @@ Authorization: Bearer {token}
       "location": "108 Nori, Mabini Extension",
       "priceRange": "₱10-50",
       "sides": "Main Gate",
-      "image": null
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      ]
     },
     ...
   ]
@@ -706,7 +728,11 @@ GET /restaurants?search=JAP&category=Rice Meal
       "location": "108 Nori, Mabini Extension",
       "priceRange": "₱10-50",
       "sides": "Main Gate",
-      "image": null
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      ]
     },
     {
       "id": "3",
@@ -716,7 +742,11 @@ GET /restaurants?search=JAP&category=Rice Meal
       "location": "38 Mabini Street Extension",
       "priceRange": "₱10-50",
       "sides": "Main Gate",
-      "image": null
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      ]
     }
   ]
 }
@@ -745,7 +775,11 @@ GET /restaurants?budgets=₱50-150&sides=Main Gate
       "location": "Inday Street, Mabini Extension",
       "priceRange": "₱50-150",
       "sides": "Main Gate",
-      "image": null
+      "profileImage": "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1459521828551-f1a82b537829?w=400&h=300&fit=crop"
+      ]
     },
     {
       "id": "4",
@@ -755,7 +789,11 @@ GET /restaurants?budgets=₱50-150&sides=Main Gate
       "location": "Main Gate Avenue",
       "priceRange": "₱50-150",
       "sides": "Main Gate",
-      "image": null
+      "profileImage": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop"
+      ]
     }
   ]
 }
@@ -868,7 +906,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
       "location": "108 Nori, Mabini Extension",
       "priceRange": "₱10-50",
       "sides": "Main Gate",
-      "image": null
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      ]
     }
   ]
 }
@@ -991,9 +1033,12 @@ CREATE TABLE restaurants (
   cuisine VARCHAR(100) NOT NULL,
   rating DECIMAL(3,1) NOT NULL,
   location VARCHAR(500) NOT NULL,
-  priceRange VARCHAR(50) NOT NULL,
+  budgetRange ENUM('10-50', '50-150', '150-500', '500-1000') NOT NULL,
+  type ENUM('Food', 'Drink'),
+  paymentMode VARCHAR(255),
   sides ENUM('Main Gate', 'Gate Six', 'Inside the School', 'North Gate', 'Hospital Gate') NOT NULL,
-  image LONGTEXT
+  profileImage LONGTEXT,
+  menuImages LONGTEXT
 );
 ```
 
