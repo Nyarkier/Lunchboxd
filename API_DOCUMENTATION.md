@@ -751,6 +751,363 @@ Content-Type: application/json
 
 ---
 
+#### Delete Contact Message (Admin Only)
+
+```
+DELETE /admin/messages/{messageId}
+Authorization: Bearer {admin-token}
+```
+
+**Response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Message deleted successfully"
+}
+```
+
+---
+
+### 3. Admin Dashboard Statistics
+
+#### Get Dashboard Statistics (Admin Only)
+
+```
+GET /admin/dashboard-stats
+Authorization: Bearer {admin-token}
+```
+
+**Response (200):**
+
+```json
+{
+  "statistics": {
+    "totalRestaurantRequests": 15,
+    "pendingRequests": 3,
+    "approvedRequests": 10,
+    "rejectedRequests": 2,
+    "totalContactMessages": 25,
+    "unreadMessages": 5,
+    "readMessages": 20,
+    "totalUsers": 42,
+    "newUsersThisMonth": 8,
+    "totalReviews": 128,
+    "averageRating": 4.3,
+    "monthlyUserGrowth": [
+      { "month": "January", "users": 5 },
+      { "month": "February", "users": 8 },
+      { "month": "March", "users": 12 },
+      { "month": "April", "users": 17 }
+    ],
+    "requestStatusBreakdown": {
+      "pending": 3,
+      "approved": 10,
+      "rejected": 2
+    },
+    "messageStatusDistribution": {
+      "unread": 5,
+      "read": 20
+    }
+  }
+}
+```
+
+---
+
+### 4. Admin Inbox Module
+
+The Inbox module displays contact messages from users via the "Talk With Us" form. Admins can view, mark as read, and delete messages.
+
+#### Get All Messages (Admin Only)
+
+```
+GET /admin/inbox
+Authorization: Bearer {admin-token}
+```
+
+**Response (200):**
+
+```json
+{
+  "messages": [
+    {
+      "id": "msg_1",
+      "senderName": "Juan Santos",
+      "senderEmail": "juan@email.com",
+      "subject": "Feedback about the app",
+      "message": "Great app! I really enjoy using it...",
+      "submittedAt": "2026-01-16T15:45:00Z",
+      "status": "unread"
+    },
+    {
+      "id": "msg_2",
+      "senderName": "Maria Rodriguez",
+      "senderEmail": "maria.r@email.com",
+      "subject": "Bug report",
+      "message": "I found a bug where...",
+      "submittedAt": "2026-01-16T12:30:00Z",
+      "status": "read"
+    }
+  ]
+}
+```
+
+---
+
+#### Mark Message as Read/Unread (Admin Only)
+
+```
+PUT /admin/inbox/{messageId}
+Authorization: Bearer {admin-token}
+
+{
+  "status": "read" | "unread"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Message status updated",
+  "updatedMessage": {
+    "id": "msg_1",
+    "status": "read"
+  }
+}
+```
+
+---
+
+#### Delete Message (Admin Only)
+
+```
+DELETE /admin/inbox/{messageId}
+Authorization: Bearer {admin-token}
+```
+
+**Response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Message deleted successfully"
+}
+```
+
+---
+
+### 5. Requested Restaurants Module
+
+The Requested Restaurants module displays user-submitted restaurant requests pending admin approval. Admins can approve requests (which adds the restaurant to the main directory) or reject them.
+
+#### Get All Requests (Admin Only)
+
+```
+GET /admin/requested-restaurants
+Authorization: Bearer {admin-token}
+```
+
+**Query Parameters:**
+
+- `status` (optional): Filter by status ('pending', 'approved', 'rejected')
+
+**Response (200):**
+
+```json
+{
+  "requests": [
+    {
+      "id": "req_1",
+      "restaurantName": "The Grill House",
+      "cuisine": "Grilled Dishes",
+      "location": "Avenue Street, Campus Area",
+      "budgetRange": "150-500",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Main Gate",
+      "description": "A cozy grill restaurant specializing in grilled steaks and seafood",
+      "submittedBy": "user_1",
+      "submittedAt": "2026-01-15T10:30:00Z",
+      "status": "pending",
+      "contact": "+639171234567",
+      "profileImage": "string or null (optional)",
+      "menuImages": ["string"] (optional, array of up to 5 images)
+    }
+  ]
+}
+```
+
+---
+
+#### Get Request Details (Admin Only)
+
+```
+GET /admin/requested-restaurants/{requestId}
+Authorization: Bearer {admin-token}
+```
+
+**Response (200):**
+
+```json
+{
+  "request": {
+    "id": "req_1",
+    "restaurantName": "The Grill House",
+    "cuisine": "Grilled Dishes",
+    "location": "Avenue Street, Campus Area",
+    "budgetRange": "150-500",
+    "type": "Food",
+    "paymentMode": ["Cash", "GCash"],
+    "sides": "Main Gate",
+    "description": "A cozy grill restaurant...",
+    "submittedBy": "user_1",
+    "submittedAt": "2026-01-15T10:30:00Z",
+    "status": "pending",
+    "contact": "+639171234567",
+    "profileImage": "data:image/jpeg;base64,...",
+    "menuImages": ["data:image/jpeg;base64,...", "data:image/png;base64,..."]
+  }
+}
+```
+
+---
+
+#### Approve Restaurant Request (Admin Only)
+
+When a request is approved, the restaurant should be added to the main restaurants collection.
+
+```
+POST /admin/requested-restaurants/{requestId}/approve
+Authorization: Bearer {admin-token}
+```
+
+**Request Body (optional):**
+
+```json
+{
+  "notes": "string (optional admin notes)"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Restaurant approved and added to directory",
+  "request": {
+    "id": "req_1",
+    "status": "approved"
+  },
+  "restaurant": {
+    "id": "rest_1",
+    "name": "The Grill House",
+    "cuisine": "Grilled Dishes",
+    "location": "Avenue Street, Campus Area",
+    "budget": "150-500",
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "data:image/jpeg;base64,..."
+  }
+}
+```
+
+---
+
+#### Reject Restaurant Request (Admin Only)
+
+```
+POST /admin/requested-restaurants/{requestId}/reject
+Authorization: Bearer {admin-token}
+```
+
+**Request Body (optional):**
+
+```json
+{
+  "reason": "string (optional rejection reason to send to user)"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Restaurant request rejected",
+  "request": {
+    "id": "req_1",
+    "status": "rejected"
+  }
+}
+```
+
+---
+
+### 2. Contact Messages
+
+#### Get All Contact Messages (Admin Only)
+
+```
+GET /admin/messages
+Authorization: Bearer {admin-token}
+```
+
+**Response (200):**
+
+```json
+{
+  "messages": [
+    {
+      "id": "msg_1",
+      "senderName": "Juan Santos",
+      "senderEmail": "juan@email.com",
+      "subject": "General Feedback",
+      "message": "Great app!...",
+      "submittedAt": "2026-01-16T15:45:00Z",
+      "status": "unread"
+    }
+  ]
+}
+```
+
+---
+
+#### Create Contact Message (Public)
+
+```
+POST /admin/messages
+Content-Type: application/json
+
+{
+  "senderName": "string",
+  "senderEmail": "string",
+  "subject": "string",
+  "message": "string"
+}
+```
+
+**Valid Subjects:**
+
+- `General Feedback`
+- `Bug Report`
+- `Feature Request`
+- `Partnership Inquiry`
+- `Other`
+
+**Response (201):**
+
+```json
+{
+  "message": { ... }
+}
+```
+
+---
+
 #### Mark Message as Read (Admin Only)
 
 ```
@@ -1083,13 +1440,14 @@ CREATE TABLE contact_messages (
 ---
 
 **Last Updated:** January 20, 2026  
-**API Version:** 2.1 (Image Upload & Admin Analytics Added)  
+**API Version:** 2.2 (Admin Modules & Real Data Integration Added)  
 **Recent Changes:**
 
-- Added profileImage and menuImages fields to RestaurantRequest model
-- Added /admin/restaurant-requests/{id} endpoint for viewing request details with images
-- Enhanced /admin/dashboard-stats endpoint with detailed analytics data for charts
-- Implemented image validation (5MB max, base64 encoding support)
-- Frontend integrated: Recharts for data visualization, DetailInspectionModal for admin details view
-  **Frontend Version:** React 19 + Vite + TypeScript  
-  **Backend Requirements:** Node.js, Express, JWT auth, SQL Database, Image storage/processing
+- Added Inbox module endpoints for managing contact messages (/admin/inbox)
+- Added Requested Restaurants module endpoints for restaurant approval workflow (/admin/requested-restaurants)
+- Added useAdminStats hook integration for real-time dashboard statistics
+- Enhanced admin dashboard with unread message count tracking
+- Implemented message status updates (read/unread) in Inbox module
+- Added restaurant approval workflow with database integration
+- Frontend Version: React 18+ with TypeScript, Vite build tool
+- Backend Requirements: Node.js, Express, JWT auth, SQL Database, Image storage/processing
