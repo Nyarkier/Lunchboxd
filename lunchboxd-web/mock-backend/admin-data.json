@@ -1,0 +1,78 @@
+{
+  "restaurantRequests": [
+    {
+      "id": "req_1",
+      "restaurantName": "The Grill House",
+      "cuisine": "Grilled Dishes",
+      "location": "Avenue Street, Campus Area",
+      "budgetRange": "150-500",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Main Gate",
+      "description": "A cozy grill restaurant specializing in grilled steaks and seafood",
+      "submittedBy": "1",
+      "submittedAt": "2025-01-15T10:30:00Z",
+      "status": "pending",
+      "contact": "+639171234567"
+    },
+    {
+      "id": "req_2",
+      "restaurantName": "Smoothie Paradise",
+      "cuisine": "Beverages",
+      "location": "Health District, North Gate",
+      "budgetRange": "50-150",
+      "type": "Drink",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "North Gate",
+      "description": "Fresh smoothies and healthy drinks made daily",
+      "submittedBy": "2",
+      "submittedAt": "2025-01-14T14:20:00Z",
+      "status": "pending",
+      "contact": "+639175678901"
+    },
+    {
+      "id": "req_3",
+      "restaurantName": "Pasta Magic",
+      "cuisine": "Italian",
+      "location": "Old Street, Gate Six",
+      "budgetRange": "100-300",
+      "type": "Food",
+      "paymentMode": ["Cash"],
+      "sides": "Gate Six",
+      "description": "Authentic Italian pasta and sauces",
+      "submittedBy": "3",
+      "submittedAt": "2025-01-10T09:15:00Z",
+      "status": "approved",
+      "contact": "+639179876543"
+    }
+  ],
+  "contactMessages": [
+    {
+      "id": "msg_1",
+      "senderName": "Juan Santos",
+      "senderEmail": "juan@email.com",
+      "subject": "Feedback about the app",
+      "message": "Great app! I really enjoy using it to find restaurants. One suggestion - add more filter options for dietary preferences.",
+      "submittedAt": "2025-01-16T15:45:00Z",
+      "status": "unread"
+    },
+    {
+      "id": "msg_2",
+      "senderName": "Maria Rodriguez",
+      "senderEmail": "maria.r@email.com",
+      "subject": "Bug report",
+      "message": "I found a bug where the favorites list doesn't update properly. Can you look into this?",
+      "submittedAt": "2025-01-16T12:30:00Z",
+      "status": "read"
+    },
+    {
+      "id": "msg_3",
+      "senderName": "Carlos Mendez",
+      "senderEmail": "carlos.m@email.com",
+      "subject": "Partnership inquiry",
+      "message": "We run a food delivery service and would like to partner with Lunchboxd. Please contact us back.",
+      "submittedAt": "2025-01-15T08:00:00Z",
+      "status": "unread"
+    }
+  ]
+}

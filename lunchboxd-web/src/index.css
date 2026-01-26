@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 :root {
   --dark-green: #2d5a27;
   --light-green: #628141;
@@ -10,4 +11,34 @@ body {
   background-color: #fbfff1;
   margin: 0;
   padding: 0;
+}
+
+@theme {
+  /* Brand and Slate Colors */
+  --color-slate-blue: #435663;
+  --color-brand-orange: #fda403;
+  --color-navy-dark: #313647;
+
+  /* Forest Palette */
+  --color-forest-light: #a3b087;
+  --color-forest-mid: #628141;
+  --color-forest-dark: #2d5a27;
+
+  /* Neutrals and Accents */
+  --color-sand: #e5c287;
+  --color-cream: #fff8d4;
+  --color-off-white: #fbfff1;
+  --color-muted: #cbc7b1;
+  --color-silver: #d9d9d9;
+  --color-black: #000000;
+}
+
+@utility no-scrollbar {
+  /* Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
