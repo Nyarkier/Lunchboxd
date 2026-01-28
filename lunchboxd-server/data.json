@@ -1,0 +1,581 @@
+﻿{
+  "restaurants": [
+    {
+      "id": "1",
+      "name": "JAP-IT Food Hauz",
+      "cuisine": "Rice Meal",
+      "rating": 4.5,
+      "location": "108 Nori, Mabini Extension",
+      "budgetRange": "10-50",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Main Gate",
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Haven Cafe",
+      "cuisine": "Cafe",
+      "rating": 4.2,
+      "location": "Inday Street, Mabini Extension",
+      "budgetRange": "50-150",
+      "type": "Drink",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Main Gate",
+      "profileImage": "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1459521828551-f1a82b537829?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1491521121402-5b3009cade4b?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Taba Eatery",
+      "cuisine": "Rice Meal",
+      "rating": 4.7,
+      "location": "38 Mabini Street Extension",
+      "budgetRange": "10-50",
+      "type": "Food",
+      "paymentMode": ["Cash"],
+      "sides": "Main Gate",
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Crispy Chicken House",
+      "cuisine": "Chicken",
+      "rating": 4.4,
+      "location": "Main Gate Avenue",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Main Gate",
+      "profileImage": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Quick Bites",
+      "cuisine": "Fast Food",
+      "rating": 3.8,
+      "location": "Student Center",
+      "budgetRange": "10-50",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Inside the School",
+      "profileImage": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1550547990-25141051e4e4?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Burger Kingdom",
+      "cuisine": "Fast Food",
+      "rating": 4.1,
+      "location": "North Gate",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "North Gate",
+      "profileImage": "https://images.unsplash.com/photo-1550547990-25141051e4e4?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1550547990-25141051e4e4?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Noodle Masters",
+      "cuisine": "Noodles",
+      "rating": 4.6,
+      "location": "Gate Six",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Gate Six",
+      "profileImage": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1585238341710-4aca07b12c4d?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Pho Vietnam",
+      "cuisine": "Noodles",
+      "rating": 4.3,
+      "location": "Inside the School",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash"],
+      "sides": "Inside the School",
+      "profileImage": "https://images.unsplash.com/photo-1585238341710-4aca07b12c4d?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1585238341710-4aca07b12c4d?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Bread & Co",
+      "cuisine": "Bread",
+      "rating": 4.4,
+      "location": "Hospital Gate",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Hospital Gate",
+      "profileImage": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Artisan Bakery",
+      "cuisine": "Bread",
+      "rating": 4.8,
+      "location": "Building 2",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Main Gate",
+      "profileImage": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "11",
+      "name": "Rice Paradise",
+      "cuisine": "Rice Meal",
+      "rating": 4.2,
+      "location": "Main Building",
+      "budgetRange": "10-50",
+      "type": "Food",
+      "paymentMode": ["Cash"],
+      "sides": "Main Gate",
+      "profileImage": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "12",
+      "name": "The Chicken Shack",
+      "cuisine": "Chicken",
+      "rating": 4.5,
+      "location": "Mabini Extension",
+      "budgetRange": "10-50",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Main Gate",
+      "profileImage": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "13",
+      "name": "Brew & Bean",
+      "cuisine": "Cafe",
+      "rating": 4.6,
+      "location": "Science Building",
+      "budgetRange": "50-150",
+      "type": "Drink",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Gate Six",
+      "profileImage": "https://images.unsplash.com/photo-1459521828551-f1a82b537829?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1459521828551-f1a82b537829?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1491521121402-5b3009cade4b?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "14",
+      "name": "Espresso Corner",
+      "cuisine": "Cafe",
+      "rating": 4.3,
+      "location": "Student Center",
+      "budgetRange": "50-150",
+      "type": "Drink",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Inside the School",
+      "profileImage": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1491521121402-5b3009cade4b?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "15",
+      "name": "Crispy & Golden",
+      "cuisine": "Chicken",
+      "rating": 4.7,
+      "location": "North Gate",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "North Gate",
+      "profileImage": "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "16",
+      "name": "Pasta & Noodles",
+      "cuisine": "Noodles",
+      "rating": 4.4,
+      "location": "Gate Six",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash"],
+      "sides": "Gate Six",
+      "profileImage": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1585238341710-4aca07b12c4d?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "17",
+      "name": "Sourdough Spot",
+      "cuisine": "Bread",
+      "rating": 4.5,
+      "location": "Inside the School",
+      "budgetRange": "50-150",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Inside the School",
+      "profileImage": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop"
+      ]
+    },
+    {
+      "id": "18",
+      "name": "Grill Master Rice",
+      "cuisine": "Rice Meal",
+      "rating": 4.6,
+      "location": "Hospital Gate",
+      "budgetRange": "10-50",
+      "type": "Food",
+      "paymentMode": ["Cash", "GCash"],
+      "sides": "Hospital Gate",
+      "profileImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+      "menuImages": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      ]
+    }
+  ],
+  "favorites": [],
+  "reviews": [
+    {
+      "id": "1001",
+      "restaurantId": "1",
+      "userId": "1",
+      "rating": 5,
+      "comment": "Sulit, masarap, abot kaya! paborito kong kainan. The portions are generous and the taste is consistent. Highly recommended!",
+      "createdAt": "2025-01-15T10:30:00Z"
+    },
+    {
+      "id": "1002",
+      "restaurantId": "1",
+      "userId": "2",
+      "rating": 4,
+      "comment": "Nice food. Better than I expected. Always coming back. Great value for money and the staff is very friendly.",
+      "createdAt": "2025-01-14T14:45:00Z"
+    },
+    {
+      "id": "1003",
+      "restaurantId": "1",
+      "userId": "3",
+      "rating": 5,
+      "comment": "Nice food. No hassle. Good, quality place. The rice is perfectly cooked and the lapu-lapu is fresh.",
+      "createdAt": "2025-01-13T12:20:00Z"
+    },
+    {
+      "id": "1004",
+      "restaurantId": "1",
+      "userId": "4",
+      "rating": 4,
+      "comment": "Really satisfied with my order. The chicken was tender and the viand portions were perfect. Will definitely come back.",
+      "createdAt": "2025-01-12T09:15:00Z"
+    },
+    {
+      "id": "1005",
+      "restaurantId": "1",
+      "userId": "5",
+      "rating": 5,
+      "comment": "Amazing experience! The food tastes homemade and the prices are unbeatable. This is my go-to place for lunch.",
+      "createdAt": "2025-01-11T11:50:00Z"
+    },
+    {
+      "id": "1006",
+      "restaurantId": "2",
+      "userId": "2",
+      "rating": 4,
+      "comment": "Great ambiance and excellent coffee. The pastries are fresh and delicious. A perfect spot to study or relax.",
+      "createdAt": "2025-01-14T10:30:00Z"
+    },
+    {
+      "id": "1007",
+      "restaurantId": "2",
+      "userId": "6",
+      "rating": 5,
+      "comment": "Love the cozy atmosphere! Their iced latte is the best in campus. The staff makes you feel welcome every time.",
+      "createdAt": "2025-01-13T15:20:00Z"
+    },
+    {
+      "id": "1008",
+      "restaurantId": "2",
+      "userId": "7",
+      "rating": 4,
+      "comment": "Good quality beverages and snacks. A bit pricey but the experience is worth it. Highly recommended for date nights.",
+      "createdAt": "2025-01-12T13:45:00Z"
+    },
+    {
+      "id": "1009",
+      "restaurantId": "3",
+      "userId": "3",
+      "rating": 5,
+      "comment": "Best rice meal on campus hands down! Consistent quality and affordable prices. I've been a regular for months.",
+      "createdAt": "2025-01-13T12:10:00Z"
+    },
+    {
+      "id": "1010",
+      "restaurantId": "3",
+      "userId": "8",
+      "rating": 5,
+      "comment": "Delicious and very affordable. The owner is friendly and the portions are generous. A hidden gem at Mabini!",
+      "createdAt": "2025-01-11T08:25:00Z"
+    },
+    {
+      "id": "1011",
+      "restaurantId": "4",
+      "userId": "1",
+      "rating": 4,
+      "comment": "Crispy chicken cooked to perfection! The gravy is really flavorful. Just a bit slow during peak hours.",
+      "createdAt": "2025-01-15T11:00:00Z"
+    },
+    {
+      "id": "1012",
+      "restaurantId": "4",
+      "userId": "5",
+      "rating": 4,
+      "comment": "Great tasting chicken and the price is fair. The service could be faster but the quality is consistent.",
+      "createdAt": "2025-01-10T16:30:00Z"
+    },
+    {
+      "id": "1013",
+      "restaurantId": "5",
+      "userId": "4",
+      "rating": 4,
+      "comment": "Quick service, good food. Perfect for quick lunch between classes. The fries are always hot and crispy.",
+      "createdAt": "2025-01-12T10:45:00Z"
+    },
+    {
+      "id": "1014",
+      "restaurantId": "5",
+      "userId": "7",
+      "rating": 4,
+      "comment": "Solid fast food option inside school. Tasty burgers and decent fries. Good value for the price.",
+      "createdAt": "2025-01-09T14:20:00Z"
+    },
+    {
+      "id": "1015",
+      "restaurantId": "6",
+      "userId": "2",
+      "rating": 4,
+      "comment": "Love their specialty burgers! Fresh ingredients and great taste. A bit crowded during lunch hours though.",
+      "createdAt": "2025-01-14T12:50:00Z"
+    },
+    {
+      "id": "1016",
+      "restaurantId": "6",
+      "userId": "6",
+      "rating": 4,
+      "comment": "Delicious burgers and shakes. The cheese is melted perfectly. Definitely worth the visit to North Gate.",
+      "createdAt": "2025-01-13T17:30:00Z"
+    },
+    {
+      "id": "1017",
+      "restaurantId": "7",
+      "userId": "3",
+      "rating": 5,
+      "comment": "Noodles cooked perfectly! Flavorful broth and tender noodles. The best noodle place in campus.",
+      "createdAt": "2025-01-13T12:40:00Z"
+    },
+    {
+      "id": "1018",
+      "restaurantId": "7",
+      "userId": "8",
+      "rating": 5,
+      "comment": "Amazing noodle dishes! The portions are generous and flavors are authentic. Loved every bite!",
+      "createdAt": "2025-01-11T19:15:00Z"
+    },
+    {
+      "id": "1019",
+      "restaurantId": "8",
+      "userId": "5",
+      "rating": 4,
+      "comment": "Authentic Vietnamese pho! Really good taste and generous portions. Would recommend to anyone.",
+      "createdAt": "2025-01-10T11:30:00Z"
+    },
+    {
+      "id": "1020",
+      "restaurantId": "8",
+      "userId": "1",
+      "rating": 4,
+      "comment": "Great pho quality! The broth is rich and full of flavor. A bit quiet which I like for peaceful dining.",
+      "createdAt": "2025-01-15T13:20:00Z"
+    },
+    {
+      "id": "1021",
+      "restaurantId": "9",
+      "userId": "4",
+      "rating": 5,
+      "comment": "Freshly baked breads every time! The croissants are buttery and delicious. Love supporting local bakery!",
+      "createdAt": "2025-01-12T09:00:00Z"
+    },
+    {
+      "id": "1022",
+      "restaurantId": "9",
+      "userId": "6",
+      "rating": 4,
+      "comment": "Quality baked goods at reasonable prices. The sourdough is especially good. Staff is always helpful.",
+      "createdAt": "2025-01-13T14:15:00Z"
+    },
+    {
+      "id": "1023",
+      "restaurantId": "10",
+      "userId": "7",
+      "rating": 5,
+      "comment": "Simply the best bakery experience! Fresh pastries and artisan bread daily. Prices are fair for the quality.",
+      "createdAt": "2025-01-09T08:30:00Z"
+    },
+    {
+      "id": "1024",
+      "restaurantId": "10",
+      "userId": "8",
+      "rating": 5,
+      "comment": "Premium quality breads and pastries! Every item is crafted with care. Worth every peso!",
+      "createdAt": "2025-01-11T10:45:00Z"
+    },
+    {
+      "id": "1025",
+      "restaurantId": "11",
+      "userId": "1",
+      "rating": 4,
+      "comment": "Great rice meal value! Tasty and filling. The owner always remembers regular customers.",
+      "createdAt": "2025-01-15T11:20:00Z"
+    },
+    {
+      "id": "1026",
+      "restaurantId": "12",
+      "userId": "3",
+      "rating": 5,
+      "comment": "Best chicken I've had on campus! Perfectly seasoned and always hot. The rice is fluffy and perfect.",
+      "createdAt": "2025-01-13T15:50:00Z"
+    },
+    {
+      "id": "1027",
+      "restaurantId": "13",
+      "userId": "2",
+      "rating": 5,
+      "comment": "Excellent coffee and wonderful ambiance. The baristas know their craft. Perfect place for meetings.",
+      "createdAt": "2025-01-14T09:30:00Z"
+    },
+    {
+      "id": "1028",
+      "restaurantId": "13",
+      "userId": "6",
+      "rating": 5,
+      "comment": "Best cafe experience! Great coffee, tasty food, and the vibe is perfect for productivity. Highly recommend!",
+      "createdAt": "2025-01-13T16:40:00Z"
+    },
+    {
+      "id": "1029",
+      "restaurantId": "14",
+      "userId": "4",
+      "rating": 4,
+      "comment": "Good espresso drinks and friendly service. A cozy corner inside the school. Perfect for short breaks.",
+      "createdAt": "2025-01-12T14:25:00Z"
+    },
+    {
+      "id": "1030",
+      "restaurantId": "15",
+      "userId": "5",
+      "rating": 5,
+      "comment": "Absolutely delicious fried chicken! Crispy outside, juicy inside. The service is fast and friendly.",
+      "createdAt": "2025-01-10T12:50:00Z"
+    },
+    {
+      "id": "1031",
+      "restaurantId": "15",
+      "userId": "8",
+      "rating": 5,
+      "comment": "One of the best fried chicken places in campus! Always consistent and delicious. Worth the trip!",
+      "createdAt": "2025-01-11T11:15:00Z"
+    },
+    {
+      "id": "1032",
+      "restaurantId": "16",
+      "userId": "1",
+      "rating": 4,
+      "comment": "Good pasta and noodle options. Flavors are authentic and portions are decent. Reasonably priced.",
+      "createdAt": "2025-01-15T12:40:00Z"
+    },
+    {
+      "id": "1033",
+      "restaurantId": "17",
+      "userId": "2",
+      "rating": 5,
+      "comment": "Wonderful sourdough bread! The texture and crust are perfect. Best bakery in the area!",
+      "createdAt": "2025-01-14T10:20:00Z"
+    },
+    {
+      "id": "1034",
+      "restaurantId": "18",
+      "userId": "3",
+      "rating": 5,
+      "comment": "Amazing grilled rice meal! The grill marks add so much flavor. My new favorite go-to restaurant!",
+      "createdAt": "2025-01-13T11:30:00Z"
+    }
+  ]
+}
+
