@@ -1,0 +1,110 @@
+[
+  {
+    "id": "1",
+    "firstName": "Prince Lord",
+    "lastName": "Mendoza",
+    "username": "princelord_m",
+    "email": "princelord@example.com",
+    "password": "password123",
+    "mobile": "+639171234567",
+    "avatar": "https://i.pravatar.cc/150?u=1",
+    "createdAt": "2024-08-15T10:30:00Z",
+    "role": "user"
+  },
+  {
+    "id": "2",
+    "firstName": "Kurt",
+    "lastName": "Valera",
+    "username": "kurtvalera",
+    "email": "kurt.valera@example.com",
+    "password": "password456",
+    "mobile": "+639175678901",
+    "avatar": "https://i.pravatar.cc/150?u=2",
+    "createdAt": "2024-09-20T14:15:00Z",
+    "role": "user"
+  },
+  {
+    "id": "3",
+    "firstName": "Raisen",
+    "lastName": "Yamul",
+    "username": "raisen_y",
+    "email": "raisen.yamul@example.com",
+    "password": "password789",
+    "mobile": "+639179876543",
+    "avatar": "https://i.pravatar.cc/150?u=3",
+    "createdAt": "2024-10-05T09:45:00Z",
+    "role": "user"
+  },
+  {
+    "id": "4",
+    "firstName": "Maria",
+    "lastName": "Santos",
+    "username": "maria_santos",
+    "email": "maria.santos@example.com",
+    "password": "password101",
+    "mobile": "+639172345678",
+    "avatar": "https://i.pravatar.cc/150?u=4",
+    "createdAt": "2024-11-10T11:20:00Z",
+    "role": "user"
+  },
+  {
+    "id": "5",
+    "firstName": "Juan",
+    "lastName": "Dela Cruz",
+    "username": "juan_dc",
+    "email": "juan.delacruz@example.com",
+    "password": "password202",
+    "mobile": "+639176543210",
+    "avatar": "https://i.pravatar.cc/150?u=5",
+    "createdAt": "2024-12-01T15:30:00Z",
+    "role": "user"
+  },
+  {
+    "id": "6",
+    "firstName": "Anna",
+    "lastName": "Cruz",
+    "username": "anna_cruz",
+    "email": "anna.cruz@example.com",
+    "password": "password303",
+    "mobile": "+639178765432",
+    "avatar": "https://i.pravatar.cc/150?u=6",
+    "createdAt": "2024-12-08T13:00:00Z",
+    "role": "user"
+  },
+  {
+    "id": "7",
+    "firstName": "Miguel",
+    "lastName": "Rodriguez",
+    "username": "miguel_rod",
+    "email": "miguel.rod@example.com",
+    "password": "password404",
+    "mobile": "+639174321098",
+    "avatar": "https://i.pravatar.cc/150?u=7",
+    "createdAt": "2025-01-02T08:15:00Z",
+    "role": "user"
+  },
+  {
+    "id": "8",
+    "firstName": "Sofia",
+    "lastName": "Gutierrez",
+    "username": "sofia_g",
+    "email": "sofia.gutierrez@example.com",
+    "password": "password505",
+    "mobile": "+639170123456",
+    "avatar": "https://i.pravatar.cc/150?u=8",
+    "createdAt": "2025-01-05T10:45:00Z",
+    "role": "user"
+  },
+  {
+    "id": "admin_1",
+    "firstName": "Admin",
+    "lastName": "Manager",
+    "username": "admin",
+    "email": "admin@lunchboxd.com",
+    "password": "admin123",
+    "mobile": "+639180000000",
+    "avatar": "https://i.pravatar.cc/150?u=admin",
+    "createdAt": "2024-08-01T08:00:00Z",
+    "role": "admin"
+  }
+]
