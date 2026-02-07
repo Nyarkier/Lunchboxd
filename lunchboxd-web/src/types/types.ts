@@ -36,14 +36,15 @@ export interface Restaurant {
   cuisine: string;
   rating: number;
   location: string;
-  budgetRange: "10-50" | "50-150" | "150-500" | "500-1000";
+  // CHANGED: 'budgetRange' -> 'priceRange' to match Python backend
+  priceRange: "10-50" | "50-150" | "150-500" | "500-1000"; 
   type?: "Food" | "Drink";
   paymentMode?: ("Cash" | "GCash")[];
   sides: Side;
-  profileImage?: string | null;
+  // CHANGED: 'profileImage' -> 'image' to match Python backend
+  image?: string | null; 
   menuImages?: string[];
 }
-
 // Filter types
 export interface FilterOptions {
   categories: string[];
@@ -90,7 +91,8 @@ export interface RestaurantRequest {
   restaurantName: string;
   cuisine: string;
   location: string;
-  budgetRange: "10-50" | "50-150" | "150-500" | "500-1000";
+  // CHANGED: 'budgetRange' -> 'priceRange'
+  priceRange: "10-50" | "50-150" | "150-500" | "500-1000";
   type: "Food" | "Drink";
   paymentMode: ("Cash" | "GCash")[];
   sides: Side;
@@ -99,10 +101,10 @@ export interface RestaurantRequest {
   submittedAt: string;
   status: "pending" | "approved" | "rejected";
   contact?: string;
-  profileImage?: string | null;
+  // CHANGED: 'profileImage' -> 'image'
+  image?: string | null;
   menuImages?: string[];
 }
-
 export interface ContactMessage {
   id: string;
   senderName: string;

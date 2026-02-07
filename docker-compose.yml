@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  # Your Python Backend (Already working!)
+  api:
+    build: ./lunchboxd-server
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./lunchboxd-server/.env
+    restart: always
+
+  # --- NEW: Your React Frontend ---
+  web:
+    build: ./lunchboxd-web
+    ports:
+      - "5173:4173"  # Maps your PC's 5173 to the container's 4173
+    depends_on:
+      - api
+    environment:
+      # This tells the frontend where to find the backend
+      - VITE_API_URL=http://localhost:3000/api
