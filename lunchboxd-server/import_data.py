@@ -1,22 +1,24 @@
 import json
 import asyncio
 import os
+import bcrypt
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
-from passlib.context import CryptContext
 
 load_dotenv()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def import_data():
     print("🔌 Connecting to MongoDB...")
-    client = AsyncIOMotorClient(os.getenv("MONGODB_URL"))
-    db = client[os.getenv("DB_NAME")]
+    # Get environment variables
+    mongo_url = os.getenv("MONGODB_URL")
+    db_name = os.getenv("DB_NAME")
+    
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[db_name]
 
     # --- 1. IMPORT USERS ---
     if os.path.exists("users.json"):
         print("👤 Found users.json. Processing...")
-        # Use utf-8-sig to handle Byte Order Mark (BOM)
         with open("users.json", "r", encoding="utf-8-sig") as f:
             users_data = json.load(f)
             
@@ -24,8 +26,14 @@ async def import_data():
         
         cleaned_users = []
         for user in users_data:
+            # FIX: Use direct bcrypt hashing to avoid passlib version errors
             if "password" in user:
-                user["password"] = pwd_context.hash(user["password"])
+                password_bytes = user["password"].encode('utf-8')
+                salt = bcrypt.gensalt()
+                hashed = bcrypt.hashpw(password_bytes, salt)
+                user["password"] = hashed.decode('utf-8')
+            
+            # Standardize ID
             if "id" in user:
                 user["_id"] = user.pop("id")
             cleaned_users.append(user)
@@ -37,7 +45,6 @@ async def import_data():
     # --- 2. IMPORT RESTAURANTS ---
     if os.path.exists("data.json"):
         print("🍔 Found data.json. Processing...")
-        # Use utf-8-sig to handle Byte Order Mark (BOM)
         with open("data.json", "r", encoding="utf-8-sig") as f:
             file_content = json.load(f)
             restaurants_data = file_content.get("restaurants", [])
@@ -46,20 +53,23 @@ async def import_data():
         
         cleaned_restaurants = []
         for r in restaurants_data:
-            if "budgetRange" in r:
-                r["priceRange"] = r.pop("budgetRange")
-            if "profileImage" in r:
-                r["image"] = r.pop("profileImage")
+            # 1. Standardize ID
             if "id" in r:
                 r["_id"] = r.pop("id")
+            
+            # 2. Map field names to match your new models/frontend
+            if "priceRange" in r:
+                r["budgetRange"] = r.pop("priceRange")
+            if "image" in r:
+                r["profileImage"] = r.pop("image")
+                
             cleaned_restaurants.append(r)
 
         if cleaned_restaurants:
             await db.restaurants.insert_many(cleaned_restaurants)
             print(f"✅ Imported {len(cleaned_restaurants)} restaurants.")
 
-    # --- 3. IMPORT REVIEWS ---
-    if os.path.exists("data.json"):
+        # --- 3. IMPORT REVIEWS ---
         reviews_data = file_content.get("reviews", [])
         if reviews_data:
             print(f"⭐ Found {len(reviews_data)} reviews. Importing...")
@@ -68,7 +78,7 @@ async def import_data():
                 if "id" in review:
                     review["_id"] = review.pop("id")
             await db.reviews.insert_many(reviews_data)
-            print("✅ Reviews imported.")
+            print(f"✅ Imported {len(reviews_data)} reviews.")
 
     client.close()
     print("\n🎉 MIGRATION COMPLETE!")

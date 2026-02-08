@@ -2,8 +2,8 @@
 import type { Restaurant, FilterOptions, FilterCriteria } from "../types/types";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === "false";
 
 // Simulate network delay for mock data
 const MOCK_DELAY = 300; // milliseconds
