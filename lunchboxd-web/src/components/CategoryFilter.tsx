@@ -26,13 +26,12 @@ const FilterPanel = ({ isOpen, onClose, onApply }: FilterPanelProps) => {
     "Gate Six",
     "Hospital Gate",
     "Inside the School",
-    "Building 2",
   ];
 
   const toggleSelection = (
     item: string,
     currentList: string[],
-    setFunction: (list: string[]) => void
+    setFunction: (list: string[]) => void,
   ) => {
     if (currentList.includes(item)) {
       setFunction(currentList.filter((i: string) => i !== item));
@@ -98,7 +97,7 @@ const FilterPanel = ({ isOpen, onClose, onApply }: FilterPanelProps) => {
                     key={budget}
                     onClick={() =>
                       setSelectedBudget(
-                        selectedBudget === budget ? null : budget
+                        selectedBudget === budget ? null : budget,
                       )
                     }
                     className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all duration-200 ${

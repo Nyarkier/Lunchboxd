@@ -37,9 +37,19 @@ export const addReview = async (
   restaurantId: string,
   userId: string,
   rating: number,
-  comment: string
+  comment: string,
 ): Promise<Review> => {
   const reviews = getReviewsFromBackend();
+
+  // Check if user already has a review for this restaurant
+  const existingReview = reviews.find(
+    (r) => r.restaurantId === restaurantId && r.userId === userId,
+  );
+  if (existingReview) {
+    throw new Error(
+      "You have already reviewed this restaurant. Please edit or delete your existing review.",
+    );
+  }
 
   const newReview: Review = {
     id: (reviewIdCounter++).toString(),
@@ -56,7 +66,7 @@ export const addReview = async (
 };
 
 export const getRestaurantReviews = async (
-  restaurantId: string
+  restaurantId: string,
 ): Promise<Review[]> => {
   const reviews = getReviewsFromBackend();
   return reviews.filter((r) => r.restaurantId === restaurantId);
@@ -71,10 +81,23 @@ export const getReviewsByUserId = async (userId: string): Promise<Review[]> => {
   return getUserReviews(userId);
 };
 
+// Check if user has already reviewed a specific restaurant
+export const getUserReviewForRestaurant = async (
+  userId: string,
+  restaurantId: string,
+): Promise<Review | null> => {
+  const reviews = getReviewsFromBackend();
+  return (
+    reviews.find(
+      (r) => r.userId === userId && r.restaurantId === restaurantId,
+    ) || null
+  );
+};
+
 export const updateReview = async (
   reviewId: string,
   rating: number,
-  comment: string
+  comment: string,
 ): Promise<Review | null> => {
   const reviews = getReviewsFromBackend();
   const review = reviews.find((r) => r.id === reviewId);
@@ -107,11 +130,11 @@ export const getAllReviews = async (): Promise<Review[]> => {
 };
 
 export const getAverageRating = async (
-  restaurantId: string
+  restaurantId: string,
 ): Promise<number> => {
   const reviews = getReviewsFromBackend();
   const restaurantReviews = reviews.filter(
-    (r) => r.restaurantId === restaurantId
+    (r) => r.restaurantId === restaurantId,
   );
 
   if (restaurantReviews.length === 0) {

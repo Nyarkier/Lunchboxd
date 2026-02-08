@@ -30,10 +30,23 @@ export type Side =
   | "North Gate"
   | "Hospital Gate";
 
+export type Cuisine =
+  | "cafe"
+  | "rice meal"
+  | "chicken"
+  | "fast food"
+  | "noodles"
+  | "bread";
+
+export interface OpenHours {
+  open: string; // e.g., "8:00 AM"
+  close: string; // e.g., "9:00 PM"
+}
+
 export interface Restaurant {
   id: string;
   name: string;
-  cuisine: string;
+  cuisine: Cuisine;
   rating: number;
   location: string;
   budgetRange: "10-50" | "50-150" | "150-500" | "500-1000";
@@ -42,6 +55,8 @@ export interface Restaurant {
   sides: Side;
   profileImage?: string | null;
   menuImages?: string[];
+  link?: string;
+  openHours?: OpenHours;
 }
 
 // Filter types
@@ -88,7 +103,7 @@ export interface MockBackendData {
 export interface RestaurantRequest {
   id: string;
   restaurantName: string;
-  cuisine: string;
+  cuisine: Cuisine;
   location: string;
   budgetRange: "10-50" | "50-150" | "150-500" | "500-1000";
   type: "Food" | "Drink";

@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { Header } from "../layouts/Header";
 import { Footer } from "../layouts/Footer";
-import { Star, ArrowLeft } from "lucide-react";
+import { Star, ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { SignInModal } from "../components/SignInModal";
-import { getReviewsByUserId } from "../services/reviewsService";
+import { ReviewModal } from "../components/ReviewModal";
+import { getReviewsByUserId, deleteReview } from "../services/reviewsService";
 import { fetchRestaurants } from "../services/apiClient";
 import type { Review as ReviewType, Restaurant } from "../types/types";
 
@@ -19,39 +20,63 @@ export function Reviews() {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [reviews, setReviews] = useState<ReviewWithRestaurant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedReview, setSelectedReview] =
+    useState<ReviewWithRestaurant | null>(null);
+
+  // Function to load reviews
+  const loadReviews = useCallback(async () => {
+    if (!user?.id) return;
+    setIsLoading(true);
+    try {
+      const userReviews = await getReviewsByUserId(user.id);
+      const restaurants = await fetchRestaurants();
+
+      const reviewsWithRestaurant = userReviews.map((review) => ({
+        ...review,
+        restaurant: restaurants.find((r) => r.id === review.restaurantId),
+      }));
+
+      // Sort by date descending
+      reviewsWithRestaurant.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+
+      setReviews(reviewsWithRestaurant);
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+      setReviews([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.id]);
 
   // Fetch user reviews on mount
   useEffect(() => {
     if (isAuthenticated && user?.id) {
-      setIsLoading(true);
-      const loadReviews = async () => {
-        try {
-          const userReviews = await getReviewsByUserId(user.id);
-          const restaurants = await fetchRestaurants();
-
-          const reviewsWithRestaurant = userReviews.map((review) => ({
-            ...review,
-            restaurant: restaurants.find((r) => r.id === review.restaurantId),
-          }));
-
-          // Sort by date descending
-          reviewsWithRestaurant.sort(
-            (a, b) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-          );
-
-          setReviews(reviewsWithRestaurant);
-        } catch (error) {
-          console.error("Failed to fetch reviews:", error);
-          setReviews([]);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
       loadReviews();
     }
-  }, [isAuthenticated, user?.id]);
+  }, [isAuthenticated, user?.id, loadReviews]);
+
+  // Handle edit button click
+  const handleEditReview = (review: ReviewWithRestaurant) => {
+    setSelectedReview(review);
+    setShowReviewModal(true);
+  };
+
+  // Handle delete button click
+  const handleDeleteReview = async (reviewId: string) => {
+    if (confirm("Are you sure you want to delete this review?")) {
+      try {
+        await deleteReview(reviewId);
+        loadReviews();
+      } catch (error) {
+        console.error("Failed to delete review:", error);
+        alert("Failed to delete review");
+      }
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -132,13 +157,9 @@ export function Reviews() {
           ) : (
             <div className="space-y-4 sm:space-y-5">
               {reviews.map((review) => (
-                <button
+                <div
                   key={review.id}
-                  onClick={() =>
-                    review.restaurant?.id &&
-                    navigate(`/store/${review.restaurant.id}`)
-                  }
-                  className="w-full bg-white rounded-lg p-4 sm:p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100 text-left"
+                  className="w-full bg-white rounded-lg p-4 sm:p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100"
                 >
                   <div className="flex gap-3 sm:gap-4">
                     {/* Restaurant Image */}
@@ -149,15 +170,47 @@ export function Reviews() {
                           "https://via.placeholder.com/80"
                         }
                         alt={review.restaurant?.name}
-                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover bg-gray-300"
+                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover bg-gray-300 cursor-pointer"
+                        onClick={() =>
+                          review.restaurant?.id &&
+                          navigate(`/store/${review.restaurant.id}`)
+                        }
                       />
                     </div>
 
                     {/* Review Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base sm:text-lg text-[#2F532F] line-clamp-1 hover:text-[#5a7a1e] transition-colors">
-                        {review.restaurant?.name || "Restaurant"}
-                      </h3>
+                      <div className="flex justify-between items-start">
+                        <button
+                          onClick={() =>
+                            review.restaurant?.id &&
+                            navigate(`/store/${review.restaurant.id}`)
+                          }
+                          className="text-left"
+                        >
+                          <h3 className="font-bold text-base sm:text-lg text-[#2F532F] line-clamp-1 hover:text-[#5a7a1e] transition-colors">
+                            {review.restaurant?.name || "Restaurant"}
+                          </h3>
+                        </button>
+
+                        {/* Edit/Delete Buttons */}
+                        <div className="flex gap-2 ml-2 shrink-0">
+                          <button
+                            onClick={() => handleEditReview(review)}
+                            className="p-2 text-gray-500 hover:text-[#5a7a1e] hover:bg-gray-100 rounded-full transition-colors"
+                            title="Edit review"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteReview(review.id)}
+                            className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                            title="Delete review"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
 
                       {/* Location */}
                       {review.restaurant?.location && (
@@ -202,12 +255,36 @@ export function Reviews() {
                       </span>
                     </div>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {/* Review Modal for Editing */}
+      {selectedReview && (
+        <ReviewModal
+          isOpen={showReviewModal}
+          onClose={() => {
+            setShowReviewModal(false);
+            setSelectedReview(null);
+          }}
+          restaurantName={selectedReview.restaurant?.name || "Restaurant"}
+          restaurantId={selectedReview.restaurantId}
+          reviewId={selectedReview.id}
+          existingReview={{
+            rating: selectedReview.rating,
+            comment: selectedReview.comment,
+          }}
+          onSuccess={() => {
+            setShowReviewModal(false);
+            setSelectedReview(null);
+            loadReviews();
+          }}
+        />
+      )}
+
       <Footer />
     </>
   );

@@ -149,7 +149,7 @@ Response:
     {
       "id": "1",
       "name": "Restaurant Name",
-      "cuisine": "Rice Meal",
+      "cuisine": "rice meal",
       "rating": 4.5,
       "location": "Main Gate Avenue",
       "priceRange": "₱50-150",
@@ -157,7 +157,9 @@ Response:
       "menuImages": [
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "restaurant@email.com",
+      "openHours": { "open": "8:00 AM", "close": "9:00 PM" }
     },
     ...
   ]
@@ -186,7 +188,7 @@ GET /api/filters
 
 Response:
 {
-  "categories": ["All", "Rice Meal", "Cafe", "Chicken", ...],
+  "categories": ["All", "cafe", "rice meal", "chicken", "fast food", "noodles", "bread"],
   "budgets": ["₱", "₱₱", "₱₱₱"]
 }
 ```

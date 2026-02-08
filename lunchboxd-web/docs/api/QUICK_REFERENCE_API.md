@@ -90,7 +90,7 @@ const { data, isLoading, error } = useRestaurants();
 ```typescript
 const { data } = useRestaurants({
   searchQuery: "rice",
-  category: "Rice Meal",
+  category: "rice meal",
   budgets: ["₱"],
 });
 ```
@@ -140,10 +140,12 @@ Restart dev server and everything works with the new data source.
     {
       "id": "1",
       "name": "Restaurant Name",
-      "cuisine": "Rice Meal",
+      "cuisine": "rice meal",
       "rating": 4.5,
       "location": "Main Gate",
-      "priceRange": "₱50-150"
+      "priceRange": "₱50-150",
+      "link": "restaurant@email.com",
+      "openHours": { "open": "8:00 AM", "close": "9:00 PM" }
     }
   ]
 }
@@ -165,7 +167,15 @@ Restart dev server and everything works with the new data source.
 
 ```json
 {
-  "categories": ["All", "Rice Meal", "Cafe", ...],
+  "categories": [
+    "All",
+    "cafe",
+    "rice meal",
+    "chicken",
+    "fast food",
+    "noodles",
+    "bread"
+  ],
   "budgets": ["₱", "₱₱", "₱₱₱"]
 }
 ```

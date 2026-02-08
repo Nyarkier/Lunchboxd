@@ -48,7 +48,7 @@ const AboutSection = () => {
           </h2>
 
           <p className="text-black  text-lg lg:text-3xl leading-relaxed mb-10 max-w-md lg:max-w-3xl drop-shadow-sm">
-            Lunchboxd is food directory for Wesleyanians{" "}
+            Lunchboxd is a food directory for Wesleyanians{" "}
             <br className="hidden lg:block" />
             by Wesleyanians. This project is especially for those who{" "}
             <br className="hidden lg:block" />

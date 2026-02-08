@@ -41,11 +41,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
       {/* Profile Image with Orange Ring */}
       <div className="relative mb-4">
         <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-orange shadow-lg">
-          <img
-            src={member.image}
-            alt={member.name}
-            className="w-full h-full object-cover"
-          />
+          <img alt={member.name} className="w-full h-full object-cover" />
         </div>
       </div>
 

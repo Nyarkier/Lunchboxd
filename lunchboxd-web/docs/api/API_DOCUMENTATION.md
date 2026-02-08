@@ -95,17 +95,32 @@ Restaurant information displayed throughout the application.
 {
   "id": "string (unique identifier)",
   "name": "string",
-  "cuisine": "string (e.g., 'Rice Meal', 'Cafe', 'Chicken', 'Fast Food')",
+  "cuisine": "Cuisine (see Cuisine enum below)",
   "rating": "number (0-5 scale, e.g., 4.5)",
   "location": "string (street address)",
   "budgetRange": "string (one of: '10-50', '50-150', '150-500', '500-1000')",
-  "type": "string (one of: 'Food', 'Drink')",
-  "paymentMode": "array of strings (e.g., ['Cash', 'GCash'])",
-  "sides": "enum (see Side enum below)",
-  "profileImage": "string or null (URL or base64 image - restaurant profile picture)",
-  "menuImages": "array of strings (URLs or base64 images - variable number of menu pictures)"
+  "type": "string (one of: 'Food', 'Drink') - optional",
+  "paymentMode": "array of strings (e.g., ['Cash', 'GCash']) - optional",
+  "sides": "Side (see Side enum below)",
+  "profileImage": "string or null (URL or base64 image - restaurant profile picture) - optional",
+  "menuImages": "array of strings (URLs or base64 images - variable number of menu pictures) - optional",
+  "link": "string (contact URL, email, or phone number) - optional",
+  "openHours": "OpenHours object (see below) - optional"
 }
 ```
+
+**Cuisine Enum:**
+
+```
+- "cafe"
+- "rice meal"
+- "chicken"
+- "fast food"
+- "noodles"
+- "bread"
+```
+
+**Note:** Cuisine values are lowercase strings.
 
 **Side Enum (Nearest Gate from School):**
 
@@ -115,6 +130,15 @@ Restaurant information displayed throughout the application.
 - "Inside the School"
 - "North Gate"
 - "Hospital Gate"
+```
+
+**OpenHours Object:**
+
+```json
+{
+  "open": "string (e.g., '8:00 AM')",
+  "close": "string (e.g., '9:00 PM')"
+}
 ```
 
 **Budget Ranges:**
@@ -166,7 +190,7 @@ Users can submit requests to add new restaurants with optional images. Admins re
 {
   "id": "string (unique identifier, e.g., 'req_1')",
   "restaurantName": "string",
-  "cuisine": "string",
+  "cuisine": "Cuisine (one of: 'cafe', 'rice meal', 'chicken', 'fast food', 'noodles', 'bread')",
   "location": "string",
   "budgetRange": "string (one of: '10-50', '50-150', '150-500', '500-1000')",
   "type": "string (one of: 'Food', 'Drink')",
@@ -250,7 +274,7 @@ GET /restaurants?search=query&category=cuisine&budgets=10-50,50-150&sides=Main G
     {
       "id": "1",
       "name": "JAP-IT Food Hauz",
-      "cuisine": "Rice Meal",
+      "cuisine": "rice meal",
       "rating": 4.5,
       "location": "108 Nori, Mabini Extension",
       "budgetRange": "10-50",
@@ -258,7 +282,12 @@ GET /restaurants?search=query&category=cuisine&budgets=10-50,50-150&sides=Main G
       "paymentMode": ["Cash", "GCash"],
       "sides": "Main Gate",
       "profileImage": "https://...",
-      "menuImages": ["https://..."]
+      "menuImages": ["https://..."],
+      "link": "japitfood@gmail.com",
+      "openHours": {
+        "open": "8:00 AM",
+        "close": "9:00 PM"
+      }
     }
   ]
 }
@@ -471,7 +500,15 @@ GET /filters
 
 ```json
 {
-  "categories": ["All", "Rice Meal", "Cafe", "Chicken", "Fast Food"],
+  "categories": [
+    "All",
+    "cafe",
+    "rice meal",
+    "chicken",
+    "fast food",
+    "noodles",
+    "bread"
+  ],
   "budgets": ["10-50", "50-150", "150-500", "500-1000"],
   "sides": [
     "Main Gate",
@@ -504,7 +541,7 @@ Authorization: Bearer {admin-token}
     {
       "id": "req_1",
       "restaurantName": "The Grill House",
-      "cuisine": "Grilled Dishes",
+      "cuisine": "rice meal",
       "location": "Avenue Street, Campus Area",
       "budgetRange": "150-500",
       "type": "Food",
@@ -530,7 +567,7 @@ Authorization: Bearer {token}
 
 {
   "restaurantName": "string",
-  "cuisine": "string",
+  "cuisine": "Cuisine (one of: 'cafe', 'rice meal', 'chicken', 'fast food', 'noodles', 'bread')",
   "location": "string",
   "budgetRange": "string",
   "type": "string",
@@ -605,7 +642,7 @@ Content-Type: application/json
 
 {
   "restaurantName": "string",
-  "cuisine": "string",
+  "cuisine": "Cuisine (one of: 'cafe', 'rice meal', 'chicken', 'fast food', 'noodles', 'bread')",
   "location": "string",
   "budgetRange": "string",
   "type": "string",
@@ -632,7 +669,7 @@ Content-Type: application/json
   "request": {
     "id": "req_1",
     "restaurantName": "The Grill House",
-    "cuisine": "Grilled Dishes",
+    "cuisine": "rice meal",
     "location": "Avenue Street, Campus Area",
     "budgetRange": "150-500",
     "type": "Food",
@@ -668,7 +705,7 @@ Authorization: Bearer {admin-token}
   "request": {
     "id": "req_1",
     "restaurantName": "The Grill House",
-    "cuisine": "Grilled Dishes",
+    "cuisine": "rice meal",
     "location": "Avenue Street, Campus Area",
     "budgetRange": "150-500",
     "type": "Food",
@@ -922,7 +959,7 @@ Authorization: Bearer {admin-token}
     {
       "id": "req_1",
       "restaurantName": "The Grill House",
-      "cuisine": "Grilled Dishes",
+      "cuisine": "rice meal",
       "location": "Avenue Street, Campus Area",
       "budgetRange": "150-500",
       "type": "Food",
@@ -956,7 +993,7 @@ Authorization: Bearer {admin-token}
   "request": {
     "id": "req_1",
     "restaurantName": "The Grill House",
-    "cuisine": "Grilled Dishes",
+    "cuisine": "rice meal",
     "location": "Avenue Street, Campus Area",
     "budgetRange": "150-500",
     "type": "Food",
@@ -1005,7 +1042,7 @@ Authorization: Bearer {admin-token}
   "restaurant": {
     "id": "rest_1",
     "name": "The Grill House",
-    "cuisine": "Grilled Dishes",
+    "cuisine": "rice meal",
     "location": "Avenue Street, Campus Area",
     "budget": "150-500",
     "rating": 0,
@@ -1180,7 +1217,7 @@ The frontend sends filter criteria in query parameters. The backend should suppo
 
 ### Category Filter
 
-- Filter by cuisine type (e.g., "Rice Meal", "Cafe")
+- Filter by cuisine type (e.g., "rice meal", "cafe")
 - "All" should return all restaurants
 
 ### Budget Filter

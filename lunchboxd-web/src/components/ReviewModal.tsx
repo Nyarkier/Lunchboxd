@@ -68,7 +68,14 @@ export function ReviewModal({
       onSuccess?.();
     } catch (error) {
       console.error("Failed to submit review:", error);
-      alert("Failed to submit review");
+      if (
+        error instanceof Error &&
+        error.message.includes("already reviewed")
+      ) {
+        alert(error.message);
+      } else {
+        alert("Failed to submit review. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -207,18 +214,24 @@ export function ReviewModal({
 
         {/* Footer Buttons */}
         <div className="flex gap-3 justify-end px-6 py-6 border-t border-gray-200 bg-gray-50">
-          <button
-            onClick={handleDelete}
-            className="px-6 py-2 bg-gray-400 text-white font-bold rounded hover:bg-gray-500 transition uppercase text-sm"
-          >
-            Delete
-          </button>
+          {reviewId && (
+            <button
+              onClick={handleDelete}
+              className="px-6 py-2 bg-gray-400 text-white font-bold rounded hover:bg-gray-500 transition uppercase text-sm"
+            >
+              Delete
+            </button>
+          )}
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
             className="px-6 py-2 bg-[#5a7a1e] text-white font-bold rounded hover:bg-[#2F532F] transition uppercase text-sm disabled:opacity-50"
           >
-            {isSubmitting ? "Saving..." : "Save Review"}
+            {isSubmitting
+              ? "Saving..."
+              : reviewId
+                ? "Update Review"
+                : "Save Review"}
           </button>
         </div>
       </div>

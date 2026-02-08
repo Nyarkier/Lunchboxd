@@ -3,7 +3,7 @@
     {
       "id": "1",
       "name": "JAP-IT Food Hauz",
-      "cuisine": "Rice Meal",
+      "cuisine": "rice meal",
       "rating": 4.5,
       "location": "108 Nori, Mabini Extension",
       "budgetRange": "10-50",
@@ -15,12 +15,14 @@
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "japitfood@gmail.com",
+      "openHours": { "open": "8:00 AM", "close": "9:00 PM" }
     },
     {
       "id": "2",
       "name": "Haven Cafe",
-      "cuisine": "Cafe",
+      "cuisine": "cafe",
       "rating": 4.2,
       "location": "Inday Street, Mabini Extension",
       "budgetRange": "50-150",
@@ -33,12 +35,14 @@
         "https://images.unsplash.com/photo-1459521828551-f1a82b537829?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1491521121402-5b3009cade4b?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "https://facebook.com/havencafe",
+      "openHours": { "open": "7:00 AM", "close": "10:00 PM" }
     },
     {
       "id": "3",
       "name": "Taba Eatery",
-      "cuisine": "Rice Meal",
+      "cuisine": "rice meal",
       "rating": 4.7,
       "location": "38 Mabini Street Extension",
       "budgetRange": "10-50",
@@ -49,12 +53,14 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "+63912345678",
+      "openHours": { "open": "6:00 AM", "close": "8:00 PM" }
     },
     {
       "id": "4",
       "name": "Crispy Chicken House",
-      "cuisine": "Chicken",
+      "cuisine": "chicken",
       "rating": 4.4,
       "location": "Main Gate Avenue",
       "budgetRange": "50-150",
@@ -66,12 +72,14 @@
         "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "crispychicken@gmail.com",
+      "openHours": { "open": "9:00 AM", "close": "9:00 PM" }
     },
     {
       "id": "5",
       "name": "Quick Bites",
-      "cuisine": "Fast Food",
+      "cuisine": "fast food",
       "rating": 3.8,
       "location": "Student Center",
       "budgetRange": "10-50",
@@ -82,12 +90,14 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1550547990-25141051e4e4?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "https://quickbites.ph",
+      "openHours": { "open": "7:00 AM", "close": "6:00 PM" }
     },
     {
       "id": "6",
       "name": "Burger Kingdom",
-      "cuisine": "Fast Food",
+      "cuisine": "fast food",
       "rating": 4.1,
       "location": "North Gate",
       "budgetRange": "50-150",
@@ -99,12 +109,14 @@
         "https://images.unsplash.com/photo-1550547990-25141051e4e4?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "https://instagram.com/burgerkingdom",
+      "openHours": { "open": "10:00 AM", "close": "10:00 PM" }
     },
     {
       "id": "7",
       "name": "Noodle Masters",
-      "cuisine": "Noodles",
+      "cuisine": "noodles",
       "rating": 4.6,
       "location": "Gate Six",
       "budgetRange": "50-150",
@@ -117,12 +129,14 @@
         "https://images.unsplash.com/photo-1585238341710-4aca07b12c4d?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "noodlemasters@gmail.com",
+      "openHours": { "open": "10:00 AM", "close": "9:00 PM" }
     },
     {
       "id": "8",
       "name": "Pho Vietnam",
-      "cuisine": "Noodles",
+      "cuisine": "noodles",
       "rating": 4.3,
       "location": "Inside the School",
       "budgetRange": "50-150",
@@ -133,12 +147,14 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1585238341710-4aca07b12c4d?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "+63987654321",
+      "openHours": { "open": "8:00 AM", "close": "7:00 PM" }
     },
     {
       "id": "9",
       "name": "Bread & Co",
-      "cuisine": "Bread",
+      "cuisine": "bread",
       "rating": 4.4,
       "location": "Hospital Gate",
       "budgetRange": "50-150",
@@ -150,12 +166,14 @@
         "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "https://facebook.com/breadandco",
+      "openHours": { "open": "6:00 AM", "close": "8:00 PM" }
     },
     {
       "id": "10",
       "name": "Artisan Bakery",
-      "cuisine": "Bread",
+      "cuisine": "bread",
       "rating": 4.8,
       "location": "Building 2",
       "budgetRange": "50-150",
@@ -167,12 +185,14 @@
         "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "artisanbakery@gmail.com",
+      "openHours": { "open": "5:00 AM", "close": "7:00 PM" }
     },
     {
       "id": "11",
       "name": "Rice Paradise",
-      "cuisine": "Rice Meal",
+      "cuisine": "rice meal",
       "rating": 4.2,
       "location": "Main Building",
       "budgetRange": "10-50",
@@ -183,12 +203,14 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "+63911223344",
+      "openHours": { "open": "6:00 AM", "close": "9:00 PM" }
     },
     {
       "id": "12",
       "name": "The Chicken Shack",
-      "cuisine": "Chicken",
+      "cuisine": "chicken",
       "rating": 4.5,
       "location": "Mabini Extension",
       "budgetRange": "10-50",
@@ -200,12 +222,14 @@
         "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "thechickenshack@gmail.com",
+      "openHours": { "open": "8:00 AM", "close": "10:00 PM" }
     },
     {
       "id": "13",
       "name": "Brew & Bean",
-      "cuisine": "Cafe",
+      "cuisine": "cafe",
       "rating": 4.6,
       "location": "Science Building",
       "budgetRange": "50-150",
@@ -218,12 +242,14 @@
         "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1491521121402-5b3009cade4b?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "https://instagram.com/brewandbean",
+      "openHours": { "open": "7:00 AM", "close": "11:00 PM" }
     },
     {
       "id": "14",
       "name": "Espresso Corner",
-      "cuisine": "Cafe",
+      "cuisine": "cafe",
       "rating": 4.3,
       "location": "Student Center",
       "budgetRange": "50-150",
@@ -234,12 +260,14 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1491521121402-5b3009cade4b?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "espressocorner@gmail.com",
+      "openHours": { "open": "6:30 AM", "close": "8:00 PM" }
     },
     {
       "id": "15",
       "name": "Crispy & Golden",
-      "cuisine": "Chicken",
+      "cuisine": "chicken",
       "rating": 4.7,
       "location": "North Gate",
       "budgetRange": "50-150",
@@ -251,12 +279,14 @@
         "https://images.unsplash.com/photo-1631384675519-172b8cc10d4f?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "https://crispyandgolden.ph",
+      "openHours": { "open": "9:00 AM", "close": "10:00 PM" }
     },
     {
       "id": "16",
       "name": "Pasta & Noodles",
-      "cuisine": "Noodles",
+      "cuisine": "noodles",
       "rating": 4.4,
       "location": "Gate Six",
       "budgetRange": "50-150",
@@ -267,12 +297,14 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1585238341710-4aca07b12c4d?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "+63955667788",
+      "openHours": { "open": "10:00 AM", "close": "8:00 PM" }
     },
     {
       "id": "17",
       "name": "Sourdough Spot",
-      "cuisine": "Bread",
+      "cuisine": "bread",
       "rating": 4.5,
       "location": "Inside the School",
       "budgetRange": "50-150",
@@ -283,12 +315,14 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "https://facebook.com/sourdoughspot",
+      "openHours": { "open": "5:30 AM", "close": "6:00 PM" }
     },
     {
       "id": "18",
       "name": "Grill Master Rice",
-      "cuisine": "Rice Meal",
+      "cuisine": "rice meal",
       "rating": 4.6,
       "location": "Hospital Gate",
       "budgetRange": "10-50",
@@ -299,7 +333,9 @@
       "menuImages": [
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
         "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
-      ]
+      ],
+      "link": "grillmasterrice@gmail.com",
+      "openHours": { "open": "6:00 AM", "close": "9:00 PM" }
     }
   ],
   "favorites": [],
@@ -578,4 +614,3 @@
     }
   ]
 }
-

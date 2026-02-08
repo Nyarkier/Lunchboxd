@@ -24,7 +24,10 @@ import {
   removeFavorite,
   isFavorite,
 } from "../services/favoritesService";
-import { getRestaurantReviews } from "../services/reviewsService";
+import {
+  getRestaurantReviews,
+  getUserReviewForRestaurant,
+} from "../services/reviewsService";
 import { getUserById } from "../services/authService";
 
 export function StoreDetails() {
@@ -41,6 +44,8 @@ export function StoreDetails() {
   const [showAllReviewsModal, setShowAllReviewsModal] = useState(false);
   const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [userExistingReview, setUserExistingReview] =
+    useState<ReviewType | null>(null);
 
   // Load favorite status
   useEffect(() => {
@@ -55,6 +60,25 @@ export function StoreDetails() {
 
     loadFavoriteStatus();
   }, [isAuthenticated, user, restaurant]);
+
+  // Check if user has an existing review for this restaurant
+  useEffect(() => {
+    const checkExistingReview = async () => {
+      if (isAuthenticated && user && id) {
+        try {
+          const existingReview = await getUserReviewForRestaurant(user.id, id);
+          setUserExistingReview(existingReview);
+        } catch (err) {
+          console.error("Failed to check existing review:", err);
+          setUserExistingReview(null);
+        }
+      } else {
+        setUserExistingReview(null);
+      }
+    };
+
+    checkExistingReview();
+  }, [isAuthenticated, user, id]);
 
   // Load reviews
   useEffect(() => {
@@ -183,7 +207,9 @@ export function StoreDetails() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pb-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* LEFT COLUMN: Info & Reviews */}
-            <div className="lg:col-span-2 space-y-6">
+            <div
+              className={`${restaurant.menuImages && restaurant.menuImages.length > 0 ? "lg:col-span-2" : "lg:col-span-3"} space-y-6`}
+            >
               {/* Store Header Info */}
               <div className="bg-[#F3F6F1] pt-4">
                 <div className="flex items-center gap-3 mb-2">
@@ -214,11 +240,17 @@ export function StoreDetails() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock size={18} className="text-[#5a7a1e]" />
-                    <span>8am - 9pm</span>
+                    <span>
+                      {restaurant.openHours
+                        ? `${restaurant.openHours.open} - ${restaurant.openHours.close}`
+                        : "Hours not available"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Mail size={18} className="text-[#5a7a1e]" />
-                    <span className="text-blue-600">japitfood@gmail.com</span>
+                    <span className="text-blue-600">
+                      {restaurant.link || "Contact not available"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Banknote size={18} className="text-[#5a7a1e]" />
@@ -251,7 +283,7 @@ export function StoreDetails() {
                     }}
                     className="bg-[#5a7a1e] text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-[#2F532F] transition-colors shadow-sm"
                   >
-                    Write a review
+                    {userExistingReview ? "Edit your review" : "Write a review"}
                   </button>
                 </div>
 
@@ -396,34 +428,26 @@ export function StoreDetails() {
               </div>
             </div>
 
-            {/* RIGHT COLUMN: Store Menu */}
-            <div className="lg:col-span-1">
-              <div className="bg-[#F3F6F1] pt-6">
-                <h2 className="text-2xl font-bold text-[#7A5C38] mb-4 text-center lg:text-left">
-                  STORE MENU
-                </h2>
+            {/* RIGHT COLUMN: Store Menu - Only show if menu images exist */}
+            {restaurant.menuImages && restaurant.menuImages.length > 0 && (
+              <div className="lg:col-span-1">
+                <div className="bg-[#F3F6F1] pt-6">
+                  <h2 className="text-2xl font-bold text-[#7A5C38] mb-4 text-center lg:text-left">
+                    STORE MENU
+                  </h2>
 
-                {/* Menu Card Container */}
-                <div className="bg-[#FFFBE6] p-4 rounded-xl shadow-md border-2 border-[#F0E6D2] relative group">
-                  {/* Image Display */}
-                  <div className="relative aspect-4/5 bg-black rounded-lg overflow-hidden">
-                    {restaurant.menuImages &&
-                    restaurant.menuImages.length > 0 ? (
+                  {/* Menu Card Container */}
+                  <div className="bg-[#FFFBE6] p-4 rounded-xl shadow-md border-2 border-[#F0E6D2] relative group">
+                    {/* Image Display */}
+                    <div className="relative aspect-4/5 bg-black rounded-lg overflow-hidden">
                       <img
                         src={restaurant.menuImages[selectedMenuIndex]}
                         alt="Menu Page"
                         className="w-full h-full object-contain"
                       />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 p-4 text-center">
-                        <Banknote size={48} className="mb-2 opacity-50" />
-                        <p>No Menu Available</p>
-                      </div>
-                    )}
 
-                    {/* Navigation Arrows */}
-                    {restaurant.menuImages &&
-                      restaurant.menuImages.length > 1 && (
+                      {/* Navigation Arrows */}
+                      {restaurant.menuImages.length > 1 && (
                         <>
                           <button
                             onClick={handlePrevMenu}
@@ -445,10 +469,11 @@ export function StoreDetails() {
                           </div>
                         </>
                       )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Recommendations Section */}
@@ -472,6 +497,15 @@ export function StoreDetails() {
         onClose={() => setShowReviewModal(false)}
         restaurantName={restaurant?.name || ""}
         restaurantId={restaurant?.id || ""}
+        reviewId={userExistingReview?.id}
+        existingReview={
+          userExistingReview
+            ? {
+                rating: userExistingReview.rating,
+                comment: userExistingReview.comment,
+              }
+            : undefined
+        }
         onSuccess={() => {
           // Refresh reviews after submission
           window.location.reload();

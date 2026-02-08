@@ -1,5 +1,5 @@
-import { useState, Suspense } from "react";
-import { Search, ChevronLeft, ChevronRight, Filter, Map } from "lucide-react";
+import { useState } from "react";
+import { Search, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { Header } from "../layouts/Header";
 import { Footer } from "../layouts/Footer";
 import FilterPanel, { type FilterState } from "../components/CategoryFilter";
@@ -16,7 +16,6 @@ export function Directory() {
   const [selectedSides, setSelectedSides] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
 
   // Fetch restaurants using the custom hook
   const { data: restaurants, isLoading } = useRestaurants({
@@ -32,7 +31,7 @@ export function Directory() {
   const totalPages = Math.ceil(restaurants.length / ITEMS_PER_PAGE);
   const paginatedRestaurants = restaurants.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   const filterCount = selectedBudgets.length;
@@ -98,31 +97,6 @@ export function Directory() {
             )}
           </button>
 
-          {/* View Mode Toggle - Desktop */}
-          <div className="hidden md:flex items-center gap-2 border border-gray-300 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`px-3 py-1 rounded transition-colors text-sm font-medium ${
-                viewMode === "grid"
-                  ? "bg-forest-mid text-white"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              Grid
-            </button>
-            <button
-              onClick={() => setViewMode("map")}
-              className={`px-3 py-1 rounded transition-colors text-sm font-medium flex items-center gap-1 ${
-                viewMode === "map"
-                  ? "bg-forest-mid text-white"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              <Map size={16} />
-              Map
-            </button>
-          </div>
-
           {/* Filter Button - Mobile */}
           <button
             onClick={() => setShowFilterModal(true)}
@@ -145,83 +119,58 @@ export function Directory() {
         />
 
         {/* Content View */}
-        {viewMode === "map" ? (
-          <Suspense
-            fallback={
-              <div className="h-96 md:h-125 rounded-xl bg-white border border-gray-300 flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <Map
-                    size={48}
-                    className="mx-auto mb-2 opacity-50 animate-pulse"
-                  />
-                  <p>Loading map...</p>
+        {/* Restaurant Grid */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-4 p-3">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-lg animate-pulse overflow-hidden"
+              >
+                <div className="h-32 bg-gray-200 rounded-t-lg" />
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded w-1/2" />
                 </div>
               </div>
-            }
-          >
-            {/* MapView component will be added here */}
-            <div className="h-96 md:h-125 rounded-xl bg-white border border-gray-300 flex items-center justify-center text-gray-500">
-              <p>Map view coming soon</p>
-            </div>
-          </Suspense>
+            ))}
+          </div>
+        ) : paginatedRestaurants.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg">No restaurants found</p>
+            <p className="text-gray-500 text-sm mt-1">
+              Try adjusting your filters or search
+            </p>
+          </div>
         ) : (
-          <>
-            {/* Restaurant Grid */}
-            {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-4 p-3">
-                {[...Array(8)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-white rounded-lg animate-pulse overflow-hidden"
-                  >
-                    <div className="h-32 bg-gray-200 rounded-t-lg" />
-                    <div className="p-3 space-y-2">
-                      <div className="h-4 bg-gray-200 rounded w-3/4" />
-                      <div className="h-3 bg-gray-200 rounded w-1/2" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : paginatedRestaurants.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-600 text-lg">No restaurants found</p>
-                <p className="text-gray-500 text-sm mt-1">
-                  Try adjusting your filters or search
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-4 p-3">
-                {paginatedRestaurants.map((restaurant) => (
-                  <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                ))}
-              </div>
-            )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-4 p-3">
+            {paginatedRestaurants.map((restaurant) => (
+              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+            ))}
+          </div>
+        )}
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-8">
-                <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="p-2 rounded-lg bg-white border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
-                >
-                  <ChevronLeft size={18} />
-                </button>
-                <span className="text-sm text-gray-600 px-4">
-                  {currentPage}/{totalPages}
-                </span>
-                <button
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="p-2 rounded-lg bg-white border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
-                >
-                  <ChevronRight size={18} />
-                </button>
-              </div>
-            )}
-          </>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="p-2 rounded-lg bg-white border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <span className="text-sm text-gray-600 px-4">
+              {currentPage}/{totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="p-2 rounded-lg bg-white border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         )}
       </main>
 
