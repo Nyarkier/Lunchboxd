@@ -1,22 +1,32 @@
-version: '3.8'
-
 services:
-  # Your Python Backend (Already working!)
   api:
-    build: ./lunchboxd-server
+    build: 
+      context: .
+      dockerfile: Dockerfile.api
+    image: lunchboxd-api
     ports:
       - "3000:3000"
-    env_file:
-      - ./lunchboxd-server/.env
-    restart: always
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/lunchboxd
+    depends_on:
+      - mongo
 
-  # --- NEW: Your React Frontend ---
   web:
-    build: ./lunchboxd-web
+    build: .
+    image: lunchboxd-web
     ports:
-      - "5173:4173"  # Maps your PC's 5173 to the container's 4173
+      - "4173:4173"  # <--- THIS IS CRITICAL. IT MUST BE HERE.
+    environment:
+      - VITE_API_URL=http://localhost:3000/api
     depends_on:
       - api
-    environment:
-      # This tells the frontend where to find the backend
-      - VITE_API_URL=http://localhost:3000/api
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
