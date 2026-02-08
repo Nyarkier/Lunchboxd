@@ -190,6 +190,27 @@ export function DetailInspectionModal({
                     </p>
                     <p className="text-slate-900">{restaurant.location}</p>
                   </div>
+                  {restaurant.link && (
+                    <div className="col-span-2">
+                      <p className="text-sm text-slate-600 font-semibold">
+                        Contact Link
+                      </p>
+                      <p className="text-slate-900 break-all">
+                        {restaurant.link}
+                      </p>
+                    </div>
+                  )}
+                  {restaurant.openHours && (
+                    <div className="col-span-2">
+                      <p className="text-sm text-slate-600 font-semibold">
+                        Operating Hours
+                      </p>
+                      <p className="text-slate-900">
+                        {restaurant.openHours.open} -{" "}
+                        {restaurant.openHours.close}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Menu Images */}

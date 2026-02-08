@@ -113,7 +113,8 @@ export interface RestaurantRequest {
   submittedBy: string;
   submittedAt: string;
   status: "pending" | "approved" | "rejected";
-  contact?: string;
+  link?: string;
+  openHours?: OpenHours;
   profileImage?: string | null;
   menuImages?: string[];
 }

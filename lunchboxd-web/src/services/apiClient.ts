@@ -2,7 +2,7 @@
 import type { Restaurant, FilterOptions, FilterCriteria } from "../types/types";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 
 // Simulate network delay for mock data
@@ -15,7 +15,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * Automatically switches between mock and real API based on VITE_USE_MOCK env var
  */
 export const fetchRestaurants = async (
-  criteria?: FilterCriteria
+  criteria?: FilterCriteria,
 ): Promise<Restaurant[]> => {
   if (USE_MOCK) {
     return fetchRestaurantsMock(criteria);
@@ -28,7 +28,7 @@ export const fetchRestaurants = async (
  * Fetch a single restaurant by ID
  */
 export const fetchRestaurantById = async (
-  id: string
+  id: string,
 ): Promise<Restaurant | null> => {
   if (USE_MOCK) {
     return fetchRestaurantByIdMock(id);
@@ -69,7 +69,7 @@ const mockRestaurants: Restaurant[] = mockBackendData.restaurants.map((r) => ({
 }));
 
 async function fetchRestaurantsMock(
-  criteria?: FilterCriteria
+  criteria?: FilterCriteria,
 ): Promise<Restaurant[]> {
   await delay(MOCK_DELAY);
 
@@ -82,7 +82,7 @@ async function fetchRestaurantsMock(
       (r) =>
         r.name.toLowerCase().includes(query) ||
         r.cuisine.toLowerCase().includes(query) ||
-        r.location.toLowerCase().includes(query)
+        r.location.toLowerCase().includes(query),
     );
   }
 
@@ -94,7 +94,7 @@ async function fetchRestaurantsMock(
   // Filter by budget range
   if (criteria?.budgets && criteria.budgets.length > 0) {
     filtered = filtered.filter((r) =>
-      criteria.budgets!.includes(r.budgetRange)
+      criteria.budgets!.includes(r.budgetRange),
     );
   }
 
@@ -102,8 +102,8 @@ async function fetchRestaurantsMock(
   if (criteria?.sides && criteria.sides.length > 0) {
     filtered = filtered.filter((r) =>
       criteria.sides!.some((side) =>
-        r.location.toLowerCase().includes(side.toLowerCase())
-      )
+        r.location.toLowerCase().includes(side.toLowerCase()),
+      ),
     );
   }
 
@@ -134,7 +134,7 @@ async function fetchFilterOptionsMock(): Promise<FilterOptions> {
  * Adjust endpoint based on your backend structure
  */
 async function fetchRestaurantsAPI(
-  criteria?: FilterCriteria
+  criteria?: FilterCriteria,
 ): Promise<Restaurant[]> {
   const params = new URLSearchParams();
 

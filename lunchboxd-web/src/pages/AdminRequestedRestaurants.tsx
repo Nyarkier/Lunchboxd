@@ -57,7 +57,8 @@ export function AdminRequestedRestaurants() {
           type: request.type,
           paymentMode: request.paymentMode,
           sides: request.sides,
-          contact: request.contact,
+          link: request.link,
+          openHours: request.openHours,
           approvedAt: new Date().toISOString(),
         };
         restaurants.push(newRestaurant);
@@ -339,9 +340,22 @@ export function AdminRequestedRestaurants() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-slate-600 font-semibold">Contact</p>
-                  <p className="text-slate-900">{selectedRequest.contact}</p>
+                  <p className="text-slate-600 font-semibold">Contact Link</p>
+                  <p className="text-slate-900">
+                    {selectedRequest.link || "N/A"}
+                  </p>
                 </div>
+                {selectedRequest.openHours && (
+                  <div>
+                    <p className="text-slate-600 font-semibold">
+                      Operating Hours
+                    </p>
+                    <p className="text-slate-900">
+                      {selectedRequest.openHours.open} -{" "}
+                      {selectedRequest.openHours.close}
+                    </p>
+                  </div>
+                )}
                 <div>
                   <p className="text-slate-600 font-semibold">Submitted</p>
                   <p className="text-slate-900">

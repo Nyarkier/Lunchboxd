@@ -1,8 +1,21 @@
-// Reviews service using mock backend data
+// Reviews service - supports both mock and backend API
 import type { Review } from "../types/types";
 import mockBackendData from "../../mock-backend/data.json";
 
-// Store reviews in localStorage for persistence
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
+
+// Helper to get auth token
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
+
+// Store reviews in localStorage for persistence (mock mode)
 const REVIEWS_STORAGE_KEY = "lunchboxd_reviews";
 
 // Get reviews from mock backend and localStorage
@@ -20,7 +33,7 @@ const getReviewsFromBackend = (): Review[] => {
   return mockBackendData.reviews || [];
 };
 
-// Update reviews in memory and localStorage
+// Update reviews in memory and localStorage (mock mode)
 const updateBackendReviews = (reviews: Review[]) => {
   mockBackendData.reviews = reviews;
   // Persist to localStorage
@@ -39,42 +52,80 @@ export const addReview = async (
   rating: number,
   comment: string,
 ): Promise<Review> => {
-  const reviews = getReviewsFromBackend();
+  if (USE_MOCK) {
+    const reviews = getReviewsFromBackend();
 
-  // Check if user already has a review for this restaurant
-  const existingReview = reviews.find(
-    (r) => r.restaurantId === restaurantId && r.userId === userId,
-  );
-  if (existingReview) {
-    throw new Error(
-      "You have already reviewed this restaurant. Please edit or delete your existing review.",
+    // Check if user already has a review for this restaurant
+    const existingReview = reviews.find(
+      (r) => r.restaurantId === restaurantId && r.userId === userId,
     );
+    if (existingReview) {
+      throw new Error(
+        "You have already reviewed this restaurant. Please edit or delete your existing review.",
+      );
+    }
+
+    const newReview: Review = {
+      id: (reviewIdCounter++).toString(),
+      restaurantId,
+      userId,
+      rating,
+      comment,
+      createdAt: new Date().toISOString(),
+    };
+
+    reviews.push(newReview);
+    updateBackendReviews(reviews);
+    return newReview;
   }
 
-  const newReview: Review = {
-    id: (reviewIdCounter++).toString(),
-    restaurantId,
-    userId,
-    rating,
-    comment,
-    createdAt: new Date().toISOString(),
-  };
+  // Real API call
+  const response = await fetch(`${API_BASE_URL}/reviews`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ restaurantId, userId, rating, comment }),
+  });
 
-  reviews.push(newReview);
-  updateBackendReviews(reviews);
-  return newReview;
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to add review");
+  }
+
+  const data = await response.json();
+  return data.review;
 };
 
 export const getRestaurantReviews = async (
   restaurantId: string,
 ): Promise<Review[]> => {
-  const reviews = getReviewsFromBackend();
-  return reviews.filter((r) => r.restaurantId === restaurantId);
+  if (USE_MOCK) {
+    const reviews = getReviewsFromBackend();
+    return reviews.filter((r) => r.restaurantId === restaurantId);
+  }
+
+  const response = await fetch(
+    `${API_BASE_URL}/reviews/restaurant/${restaurantId}`,
+  );
+  if (!response.ok) {
+    return [];
+  }
+  const data = await response.json();
+  return data.reviews || [];
 };
 
 export const getUserReviews = async (userId: string): Promise<Review[]> => {
-  const reviews = getReviewsFromBackend();
-  return reviews.filter((r) => r.userId === userId);
+  if (USE_MOCK) {
+    const reviews = getReviewsFromBackend();
+    return reviews.filter((r) => r.userId === userId);
+  }
+
+  // Backend doesn't have a user reviews endpoint, so we get all and filter
+  const response = await fetch(`${API_BASE_URL}/reviews`);
+  if (!response.ok) {
+    return [];
+  }
+  const data = await response.json();
+  return (data.reviews || []).filter((r: Review) => r.userId === userId);
 };
 
 export const getReviewsByUserId = async (userId: string): Promise<Review[]> => {
@@ -86,12 +137,17 @@ export const getUserReviewForRestaurant = async (
   userId: string,
   restaurantId: string,
 ): Promise<Review | null> => {
-  const reviews = getReviewsFromBackend();
-  return (
-    reviews.find(
-      (r) => r.userId === userId && r.restaurantId === restaurantId,
-    ) || null
-  );
+  if (USE_MOCK) {
+    const reviews = getReviewsFromBackend();
+    return (
+      reviews.find(
+        (r) => r.userId === userId && r.restaurantId === restaurantId,
+      ) || null
+    );
+  }
+
+  const reviews = await getRestaurantReviews(restaurantId);
+  return reviews.find((r) => r.userId === userId) || null;
 };
 
 export const updateReview = async (
@@ -99,48 +155,75 @@ export const updateReview = async (
   rating: number,
   comment: string,
 ): Promise<Review | null> => {
-  const reviews = getReviewsFromBackend();
-  const review = reviews.find((r) => r.id === reviewId);
+  if (USE_MOCK) {
+    const reviews = getReviewsFromBackend();
+    const review = reviews.find((r) => r.id === reviewId);
 
-  if (review) {
-    review.rating = rating;
-    review.comment = comment;
-    updateBackendReviews(reviews);
-    return review;
+    if (review) {
+      review.rating = rating;
+      review.comment = comment;
+      updateBackendReviews(reviews);
+      return review;
+    }
+    return null;
   }
 
-  return null;
+  const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ rating, comment }),
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+  const data = await response.json();
+  return data.review;
 };
 
 export const deleteReview = async (reviewId: string): Promise<boolean> => {
-  const reviews = getReviewsFromBackend();
-  const index = reviews.findIndex((r) => r.id === reviewId);
+  if (USE_MOCK) {
+    const reviews = getReviewsFromBackend();
+    const index = reviews.findIndex((r) => r.id === reviewId);
 
-  if (index > -1) {
-    reviews.splice(index, 1);
-    updateBackendReviews(reviews);
-    return true;
+    if (index > -1) {
+      reviews.splice(index, 1);
+      updateBackendReviews(reviews);
+      return true;
+    }
+    return false;
   }
 
-  return false;
+  const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  return response.ok;
 };
 
 export const getAllReviews = async (): Promise<Review[]> => {
-  return getReviewsFromBackend();
+  if (USE_MOCK) {
+    return getReviewsFromBackend();
+  }
+
+  const response = await fetch(`${API_BASE_URL}/reviews`);
+  if (!response.ok) {
+    return [];
+  }
+  const data = await response.json();
+  return data.reviews || [];
 };
 
 export const getAverageRating = async (
   restaurantId: string,
 ): Promise<number> => {
-  const reviews = getReviewsFromBackend();
-  const restaurantReviews = reviews.filter(
-    (r) => r.restaurantId === restaurantId,
-  );
+  const reviews = await getRestaurantReviews(restaurantId);
 
-  if (restaurantReviews.length === 0) {
+  if (reviews.length === 0) {
     return 0;
   }
 
-  const sum = restaurantReviews.reduce((acc, r) => acc + r.rating, 0);
-  return sum / restaurantReviews.length;
+  const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+  return sum / reviews.length;
 };

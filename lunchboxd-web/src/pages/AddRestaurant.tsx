@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Header } from "../layouts/Header";
 import { Footer } from "../layouts/Footer";
 import { createRestaurantRequest } from "../services/adminService";
-import type { Side } from "../types/types";
+import type { Side, Cuisine, OpenHours } from "../types/types";
 import { ArrowLeft, CheckCircle, Upload, X } from "lucide-react";
 
 export function AddRestaurant() {
@@ -16,17 +16,66 @@ export function AddRestaurant() {
 
   const [formData, setFormData] = useState({
     restaurantName: "",
-    cuisine: "",
+    cuisine: "rice meal" as Cuisine,
     location: "",
     budgetRange: "50-150" as "10-50" | "50-150" | "150-500" | "500-1000",
     type: "Food" as "Food" | "Drink",
     paymentMode: [] as ("Cash" | "GCash")[],
     sides: "Main Gate" as Side,
     description: "",
-    contact: "",
+    link: "",
+    openHours: { open: "", close: "" } as OpenHours,
     profileImage: null as string | null,
     menuImages: [] as string[],
   });
+
+  const cuisineOptions: Cuisine[] = [
+    "cafe",
+    "rice meal",
+    "chicken",
+    "fast food",
+    "noodles",
+    "bread",
+  ];
+
+  const timeOptions = [
+    "6:00 AM",
+    "6:30 AM",
+    "7:00 AM",
+    "7:30 AM",
+    "8:00 AM",
+    "8:30 AM",
+    "9:00 AM",
+    "9:30 AM",
+    "10:00 AM",
+    "10:30 AM",
+    "11:00 AM",
+    "11:30 AM",
+    "12:00 PM",
+    "12:30 PM",
+    "1:00 PM",
+    "1:30 PM",
+    "2:00 PM",
+    "2:30 PM",
+    "3:00 PM",
+    "3:30 PM",
+    "4:00 PM",
+    "4:30 PM",
+    "5:00 PM",
+    "5:30 PM",
+    "6:00 PM",
+    "6:30 PM",
+    "7:00 PM",
+    "7:30 PM",
+    "8:00 PM",
+    "8:30 PM",
+    "9:00 PM",
+    "9:30 PM",
+    "10:00 PM",
+    "10:30 PM",
+    "11:00 PM",
+    "11:30 PM",
+  ];
 
   const sides: Side[] = [
     "Main Gate",
@@ -136,7 +185,7 @@ export function AddRestaurant() {
       if (!formData.restaurantName.trim()) {
         throw new Error("Restaurant name is required");
       }
-      if (!formData.cuisine.trim()) {
+      if (!formData.cuisine) {
         throw new Error("Cuisine type is required");
       }
       if (!formData.location.trim()) {
@@ -156,7 +205,11 @@ export function AddRestaurant() {
         sides: formData.sides,
         description: formData.description,
         submittedBy: user?.id || "unknown",
-        contact: formData.contact,
+        link: formData.link || undefined,
+        openHours:
+          formData.openHours.open && formData.openHours.close
+            ? formData.openHours
+            : undefined,
         profileImage: formData.profileImage,
         menuImages: formData.menuImages,
       });
@@ -166,14 +219,15 @@ export function AddRestaurant() {
         // Reset form
         setFormData({
           restaurantName: "",
-          cuisine: "",
+          cuisine: "rice meal",
           location: "",
           budgetRange: "50-150",
           type: "Food",
           paymentMode: [],
           sides: "Main Gate",
           description: "",
-          contact: "",
+          link: "",
+          openHours: { open: "", close: "" },
           profileImage: null,
           menuImages: [],
         });
@@ -268,19 +322,27 @@ export function AddRestaurant() {
                   <label className="block text-sm font-semibold text-forest-dark mb-2">
                     Cuisine Type *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     required
-                    placeholder="e.g., Rice Meal, Cafe"
                     value={formData.cuisine}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
-                        cuisine: e.target.value,
+                        cuisine: e.target.value as Cuisine,
                       }))
                     }
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-dark focus:border-transparent"
-                  />
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-dark focus:border-transparent capitalize"
+                  >
+                    {cuisineOptions.map((cuisine) => (
+                      <option
+                        key={cuisine}
+                        value={cuisine}
+                        className="capitalize"
+                      >
+                        {cuisine.charAt(0).toUpperCase() + cuisine.slice(1)}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-forest-dark mb-2">
@@ -418,23 +480,85 @@ export function AddRestaurant() {
                 />
               </div>
 
-              {/* Contact */}
+              {/* Link (Contact URL/Email/Phone) */}
               <div>
                 <label className="block text-sm font-semibold text-forest-dark mb-2">
-                  Contact Number (Optional)
+                  Contact Link (Optional)
                 </label>
                 <input
-                  type="tel"
-                  placeholder="e.g., +639171234567"
-                  value={formData.contact}
+                  type="text"
+                  placeholder="e.g., email@example.com, https://facebook.com/restaurant, +639171234567"
+                  value={formData.link}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      contact: e.target.value,
+                      link: e.target.value,
                     }))
                   }
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-dark focus:border-transparent"
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  URL, email address, or phone number
+                </p>
+              </div>
+
+              {/* Open Hours */}
+              <div>
+                <label className="block text-sm font-semibold text-forest-dark mb-2">
+                  Operating Hours (Optional)
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">
+                      Opens at
+                    </label>
+                    <select
+                      value={formData.openHours.open}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          openHours: {
+                            ...prev.openHours,
+                            open: e.target.value,
+                          },
+                        }))
+                      }
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-dark focus:border-transparent"
+                    >
+                      <option value="">Select time</option>
+                      {timeOptions.map((time) => (
+                        <option key={time} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">
+                      Closes at
+                    </label>
+                    <select
+                      value={formData.openHours.close}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          openHours: {
+                            ...prev.openHours,
+                            close: e.target.value,
+                          },
+                        }))
+                      }
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-dark focus:border-transparent"
+                    >
+                      <option value="">Select time</option>
+                      {timeOptions.map((time) => (
+                        <option key={time} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
 
               {/* Profile Image Upload */}
