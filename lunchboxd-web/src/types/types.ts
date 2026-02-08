@@ -1,4 +1,51 @@
-// User types
+// src/types/types.ts
+
+export type Side =
+  | "Main Gate"
+  | "Gate Six"
+  | "Inside the School"
+  | "North Gate"
+  | "Hospital Gate"
+  | string;
+
+export interface Restaurant {
+  id: string;
+  name: string;
+  cuisine: string;
+  rating: number;
+  location: string;
+  // ✅ CHANGED BACK: Required string (remove the ?)
+  budgetRange: string; 
+  type?: "Food" | "Drink" | string;
+  paymentMode?: ("Cash" | "GCash" | string)[];
+  sides: string;
+  profileImage?: string | null; 
+  menuImages?: string[];
+  [key: string]: any;
+}
+
+// ... (keep the rest of the file exactly as it was) ...
+
+// Just ensure RestaurantRequest also has budgetRange as string
+export interface RestaurantRequest {
+  id: string;
+  restaurantName: string;
+  cuisine: string;
+  location: string;
+  budgetRange: string; // ✅ Required string
+  type: "Food" | "Drink" | string;
+  paymentMode: ("Cash" | "GCash" | string)[];
+  sides: string;
+  description?: string;
+  submittedBy: string;
+  submittedAt: string;
+  status: "pending" | "approved" | "rejected";
+  contact?: string;
+  profileImage?: string | null;
+  menuImages?: string[];
+}
+
+// Keep the other interfaces (User, AuthUser, etc.) same as before
 export interface User {
   id: string;
   firstName: string;
@@ -22,30 +69,6 @@ export interface AuthUser {
   role?: "user" | "admin";
 }
 
-// Restaurant types
-export type Side =
-  | "Main Gate"
-  | "Gate Six"
-  | "Inside the School"
-  | "North Gate"
-  | "Hospital Gate";
-
-export interface Restaurant {
-  id: string;
-  name: string;
-  cuisine: string;
-  rating: number;
-  location: string;
-  // CHANGED: 'budgetRange' -> 'priceRange' to match Python backend
-  priceRange: "10-50" | "50-150" | "150-500" | "500-1000"; 
-  type?: "Food" | "Drink";
-  paymentMode?: ("Cash" | "GCash")[];
-  sides: Side;
-  // CHANGED: 'profileImage' -> 'image' to match Python backend
-  image?: string | null; 
-  menuImages?: string[];
-}
-// Filter types
 export interface FilterOptions {
   categories: string[];
   budgets: string[];
@@ -59,13 +82,11 @@ export interface FilterCriteria {
   sides?: string[];
 }
 
-// Favorites type
 export interface Favorite {
   userId: string;
   restaurantId: string;
 }
 
-// Review type
 export interface Review {
   id: string;
   restaurantId: string;
@@ -75,36 +96,6 @@ export interface Review {
   createdAt: string;
 }
 
-// Mock backend data structure
-export interface MockBackendData {
-  restaurants: Restaurant[];
-  favorites: Favorite[];
-  reviews: Review[];
-  users?: User[];
-  restaurantRequests?: RestaurantRequest[];
-  contactMessages?: ContactMessage[];
-}
-
-// Admin feature types
-export interface RestaurantRequest {
-  id: string;
-  restaurantName: string;
-  cuisine: string;
-  location: string;
-  // CHANGED: 'budgetRange' -> 'priceRange'
-  priceRange: "10-50" | "50-150" | "150-500" | "500-1000";
-  type: "Food" | "Drink";
-  paymentMode: ("Cash" | "GCash")[];
-  sides: Side;
-  description?: string;
-  submittedBy: string;
-  submittedAt: string;
-  status: "pending" | "approved" | "rejected";
-  contact?: string;
-  // CHANGED: 'profileImage' -> 'image'
-  image?: string | null;
-  menuImages?: string[];
-}
 export interface ContactMessage {
   id: string;
   senderName: string;

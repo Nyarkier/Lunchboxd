@@ -1,50 +1,41 @@
-// Authentication service using mock backend users data
+// Authentication service using REAL Python API
 import type { User, AuthUser } from "../types/types";
-import mockUsersData from "../../mock-backend/users.json";
 
-// Create mutable copy of mock users data with proper typing
-let mockUsers: User[] = (
-  mockUsersData as Array<{
-    id: string;
-    firstName: string;
-    lastName: string;
-    username: string;
-    email: string;
-    password: string;
-    mobile: string;
-    avatar: string;
-    createdAt: string;
-    role?: "user" | "admin";
-  }>
-).map((u) => ({
-  ...u,
-  role: (u.role || "user") as "user" | "admin",
-}));
+// Get API URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
+/**
+ * Log in a user through the real API
+ */
 export const authenticateUser = async (
   username: string,
   password: string,
 ): Promise<AuthUser | null> => {
-  const user = mockUsers.find(
-    (u) =>
-      (u.username === username || u.email === username) &&
-      u.password === password,
-  );
+  const url = `${API_BASE_URL}/login`;
 
-  if (user) {
-    return {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      email: user.email,
-      role: user.role || "user",
-    };
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    // Assuming backend returns { user: AuthUser, token: string }
+    return data.user || data;
+  } catch (error) {
+    console.error("Login error:", error);
+    return null;
   }
-
-  return null;
 };
 
+/**
+ * Register a new user through the real API
+ */
 export const registerUser = async (
   firstName: string,
   lastName: string,
@@ -52,58 +43,57 @@ export const registerUser = async (
   email: string,
   password: string,
 ): Promise<AuthUser | { error: string }> => {
-  // Check if user already exists
-  const existingUser = mockUsers.find(
-    (u) => u.username === username || u.email === email,
-  );
+  const url = `${API_BASE_URL}/users`;
 
-  if (existingUser) {
-    return { error: "Username or email already exists" };
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, lastName, username, email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { error: data.detail || "Registration failed" };
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Registration error:", error);
+    return { error: "Server connection failed" };
   }
-
-  // Create new user
-  const newUser: User = {
-    id: (mockUsers.length + 1).toString(),
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-    mobile: "",
-    avatar: null,
-    createdAt: new Date().toISOString(),
-    role: "user",
-  };
-
-  mockUsers.push(newUser);
-
-  return {
-    id: newUser.id,
-    firstName: newUser.firstName,
-    lastName: newUser.lastName,
-    username: newUser.username,
-    email: newUser.email,
-    role: newUser.role,
-  };
 };
 
+/**
+ * Get user profile by ID from the API
+ */
 export const getUserById = async (id: string): Promise<AuthUser | null> => {
-  const user = mockUsers.find((u) => u.id === id);
+  const url = `${API_BASE_URL}/users/${id}`;
 
-  if (user) {
-    return {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      email: user.email,
-      role: user.role || "user",
-    };
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching user ${id}:`, error);
+    return null;
   }
-
-  return null;
 };
 
+/**
+ * Admin: Get all users from the API
+ */
 export const getAllUsers = async (): Promise<User[]> => {
-  return mockUsers;
+  const url = `${API_BASE_URL}/users`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.users || data;
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    return [];
+  }
 };

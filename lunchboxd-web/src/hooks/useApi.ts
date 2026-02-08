@@ -1,78 +1,93 @@
-import { useState, useEffect } from "react";
+// src/hooks/useApi.ts
+import { useState, useEffect } from "react"; // <--- Removed useCallback
+import type { Restaurant, FilterOptions, FilterCriteria } from "../types/types";
+import {
+  fetchRestaurants,
+  fetchRestaurantById,
+  fetchFilterOptions,
+} from "../services/apiClient";
 
-// 1. Point to your running Python Backend
-const API_BASE_URL = "http://localhost:3000/api";
-
-// This interface matches how your component expects data
-interface Restaurant {
-  id: string;
-  name: string;
-  cuisine: string;
-  rating: number;
-  location: string;
-  priceRange: string;
-  sides: string;
-  image: string;
-}
-
-export function useRestaurants({ searchQuery, category, budgets, sides }: any) {
+export function useRestaurants(criteria: FilterCriteria = {}) {
   const [data, setData] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const fetchRestaurants = async () => {
+    let isMounted = true;
+
+    const loadData = async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        // 2. Build the query URL (e.g. ?search=pizza&category=Rice+Meal)
-        const params = new URLSearchParams();
-        
-        if (searchQuery) params.append("search", searchQuery);
-        if (category && category !== "All") params.append("category", category);
-        if (budgets && budgets.length > 0) params.append("budgets", budgets.join(","));
-        if (sides && sides.length > 0) params.append("sides", sides.join(","));
-
-        const url = `${API_BASE_URL}/restaurants?${params.toString()}`;
-
-        // 3. Call the Python Backend
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch from backend");
-        }
-
-        const result = await response.json();
-        
-        // 4. Update State
-        // backend returns { restaurants: [...] }
-        setData(result.restaurants || []);
-        setError(null);
-      } catch (err: any) {
-        console.error("Connection Error:", err);
-        setError("Could not connect to server. Is it running?");
-        // Optional: Fallback to empty list or keep old data
-        setData([]);
+        const result = await fetchRestaurants(criteria);
+        if (isMounted) setData(result);
+      } catch (err) {
+        if (isMounted) setError(err instanceof Error ? err : new Error("Unknown error"));
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
 
-    // Debounce: Wait 300ms after typing stops before fetching
-    const timeoutId = setTimeout(() => {
-      fetchRestaurants();
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, category, budgets, sides]);
+    loadData();
+    return () => { isMounted = false; };
+  }, [JSON.stringify(criteria)]);
 
   return { data, isLoading, error };
 }
 
-// Keep the filters static for now
+export function useRestaurant(id: string | null) {
+  const [data, setData] = useState<Restaurant | null>(null);
+  const [isLoading, setIsLoading] = useState(!!id);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!id) {
+      setData(null);
+      setIsLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+    const loadData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const result = await fetchRestaurantById(id);
+        if (isMounted) setData(result);
+      } catch (err) {
+        if (isMounted) setError(err instanceof Error ? err : new Error("Unknown error"));
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadData();
+    return () => { isMounted = false; };
+  }, [id]);
+
+  return { data, isLoading, error };
+}
+
 export function useFilterOptions() {
-  return {
-    categories: ["All", "Rice Meal", "Silog", "Chicken", "Noodles", "Snacks", "Drinks"],
-    budgets: ["₱10-50", "₱50-100", "₱100+"],
-    sides: ["Main Gate", "Gate Six", "North Gate", "Hospital Gate", "Inside the School"]
-  };
+  const [data, setData] = useState<FilterOptions>({ categories: [], budgets: [] });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadData = async () => {
+      try {
+        const result = await fetchFilterOptions();
+        if (isMounted) setData(result);
+      } catch (err) {
+        if (isMounted) setError(err instanceof Error ? err : new Error("Unknown error"));
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+    loadData();
+    return () => { isMounted = false; };
+  }, []);
+
+  return { data, isLoading, error };
 }

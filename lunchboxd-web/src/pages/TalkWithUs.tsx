@@ -49,23 +49,28 @@ export function TalkWithUs() {
         throw new Error("Message is required");
       }
 
-      const message = await createContactMessage({
+      // --- FIX IS HERE ---
+      // We removed "const message =" and the "if (message)" check.
+      // We just await the function. If it doesn't throw an error, it worked.
+      await createContactMessage({
         senderName: formData.senderName,
         senderEmail: formData.senderEmail,
         subject: formData.subject,
         message: formData.message,
       });
 
-      if (message) {
-        setSubmitted(true);
-        // Reset form
-        setFormData({
-          senderName: "",
-          senderEmail: "",
-          subject: "",
-          message: "",
-        });
-      }
+      // If we get here, it was successful
+      setSubmitted(true);
+      
+      // Reset form
+      setFormData({
+        senderName: "",
+        senderEmail: "",
+        subject: "",
+        message: "",
+      });
+      // -------------------
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

@@ -81,7 +81,7 @@ export function StoreDetailsExample() {
       <p>{restaurant.cuisine}</p>
       <p>Rating: {restaurant.rating}</p>
       <p>Location: {restaurant.location}</p>
-      <p>Price: {restaurant.priceRange}</p>
+      <p>Price: {restaurant.budgetRange}</p>
     </div>
   );
 }
