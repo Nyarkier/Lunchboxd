@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from datetime import datetime
+from bson import ObjectId  # <--- FIX 1: Added this import
 
 # Import our own files
 from .database import db, fix_id
@@ -13,10 +14,17 @@ from .security import (get_password_hash, verify_password, create_access_token,
 
 app = FastAPI()
 
-# Enable CORS so your frontend can talk to this backend
+# --- FIX 2: CORRECT CORS SETUP ---
+origins = [
+    "http://localhost:5173",      # Vite Frontend (Standard)
+    "http://127.0.0.1:5173",      # Vite Frontend (Alternative)
+    "http://localhost:3000",      # Backend (Self)
+    "http://127.0.0.1:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, change this to your frontend URL
+    allow_origins=origins,        # Must be specific list, not ["*"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -41,7 +49,7 @@ async def register(user: UserCreate):
     
     # Generate token
     user_id = str(new_user.inserted_id)
-    token = create_access_token({"sub": user_id})
+    token = create_access_token(data={"sub": user_id})  # Ensure 'data' kwarg is used if required by your func
     
     return {"user": {**user.dict(), "id": user_id}, "token": token}
 
@@ -52,7 +60,7 @@ async def login(creds: LoginRequest):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     user_id = str(user["_id"])
-    token = create_access_token({"sub": user_id})
+    token = create_access_token(data={"sub": user_id})
     
     # Return user info without password
     user["id"] = user_id
@@ -77,10 +85,11 @@ async def get_restaurants(
     if sides:
         query["sides"] = {"$in": sides.split(",")}
     if budgets:
-        query["priceRange"] = {"$in": budgets.split(",")}
+        query["budgetRange"] = {"$in": budgets.split(",")}
     if search:
         query["name"] = {"$regex": search, "$options": "i"}
 
+    # Limit to 100 to prevent database overload
     restaurants = await db.restaurants.find(query).to_list(100)
     return {"restaurants": [fix_id(r) for r in restaurants]}
 
@@ -111,11 +120,15 @@ async def get_favorites(user_id: str, current_user: str = Depends(get_current_us
     restaurant_ids = [f["restaurantId"] for f in favs]
     
     # 2. Get Actual Restaurants
-    # Note: If you stored IDs as ObjectIds, use ObjectId(r_id)
-    # Assuming string IDs for simplicity based on previous steps
-    restaurants = await db.restaurants.find({"_id": {"$in": [ObjectId(rid) for rid in restaurant_ids]}}).to_list(100)
+    # Try converting to ObjectId first (Standard Mongo practice)
+    try:
+        object_ids = [ObjectId(rid) for rid in restaurant_ids]
+        restaurants = await db.restaurants.find({"_id": {"$in": object_ids}}).to_list(100)
+    except:
+        # Fallback: If IDs were saved as strings
+        restaurants = await db.restaurants.find({"_id": {"$in": restaurant_ids}}).to_list(100)
     
-    # If the above fails due to ObjectId issues, we can try matching by string ID if you stored them that way
+    # If standard fetch returned nothing, try matching against a custom "id" field just in case
     if not restaurants and restaurant_ids:
          restaurants = await db.restaurants.find({"id": {"$in": restaurant_ids}}).to_list(100)
 
