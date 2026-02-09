@@ -5,8 +5,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 from bson import ObjectId
+
+# --- ROUTER IMPORTS (Restored) ---
 from app.routers import favorites, reviews, admin_messages, admin_requests
-# Import our own files
+
+# --- INTERNAL IMPORTS ---
 from .database import db, fix_id
 from .models import (
     UserCreate, UserPublic, LoginRequest, Restaurant, 
@@ -22,7 +25,7 @@ app = FastAPI()
 # --- CORS SETUP ---
 origins = [
     "http://localhost:5173",
-    "http://localhost:4173",
+    "http://localhost:3000",
     "http://127.0.0.1:5173",
     "http://0.0.0.0:4173"
 ]
@@ -34,6 +37,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- INCLUDE ROUTERS (Restored) ---
+app.include_router(favorites.router) 
+app.include_router(reviews.router, prefix="/api", tags=["reviews"])
+app.include_router(admin_messages.router, prefix="/api/admin", tags=["admin-messages"])
+app.include_router(admin_requests.router, prefix="/api/admin", tags=["admin-requests"])
 
 # --- AUTH HELPER ---
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -86,7 +95,6 @@ async def get_restaurants(
 @app.get("/api/restaurants/{id}", response_model=Restaurant)
 async def get_restaurant(id: str):
     try:
-        # Check by ObjectId, String ID, or custom 'id' field
         res = await db.restaurants.find_one({"$or": [
             {"_id": ObjectId(id) if len(id) == 24 else None},
             {"_id": id},
@@ -104,6 +112,14 @@ async def get_restaurant(id: str):
     if "profileImage" not in res and "image" in res:
         res["profileImage"] = res["image"]
         
+    # --- GOOGLE SEARCH REDIRECT FOR MAP URL (Temporary Fix) ---
+    res["instagramUrl"] = res.get("instagramUrl", "https://instagram.com")
+    res["facebookUrl"] = res.get("facebookUrl", "https://facebook.com")
+    
+    # Points to a Google Search of the restaurant name + its location
+    search_query = f"{res.get('name', '')} {res.get('location', '')}".replace(" ", "+")
+    res["mapUrl"] = res.get("mapUrl", f"https://www.google.com/search?q={search_query}")
+        
     return res
 
 @app.get("/api/filters")
@@ -116,34 +132,23 @@ async def get_filters():
     }
 
 # ==================================================================
-# 2. USER & AUTH ENDPOINTS (Updated for Mobile/Email Flexibility)
+# 2. USER & AUTH (Universal Login & Profile)
 # ==================================================================
 
 @app.post("/api/users", response_model=UserPublic)
 async def register(user: UserCreate):
-    # Validation: Check if it's a valid email or PH mobile format
     is_email = re.match(r"[^@]+@[^@]+\.[^@]+", user.email)
     is_mobile = re.match(r"^(09|\+639)\d{9}$", user.email)
 
     if not (is_email or is_mobile):
-        raise HTTPException(
-            status_code=400, 
-            detail="Please enter a valid Email or Philippine Mobile Number (e.g., 09171234567)"
-        )
+        raise HTTPException(status_code=400, detail="Use a valid Email or PH Mobile Number")
 
-    existing = await db.users.find_one({
-        "$or": [
-            {"username": user.username},
-            {"email": user.email}
-        ]
-    })
-    
+    existing = await db.users.find_one({"$or": [{"username": user.username}, {"email": user.email}]})
     if existing:
-        raise HTTPException(status_code=400, detail="Username or Contact info already taken")
+        raise HTTPException(status_code=400, detail="Username or Contact info taken")
     
-    hashed_pw = get_password_hash(user.password)
     user_dict = user.dict()
-    user_dict["password"] = hashed_pw
+    user_dict["password"] = get_password_hash(user.password)
     user_dict["createdAt"] = datetime.now().isoformat()
     user_dict["role"] = "user"
     
@@ -153,26 +158,18 @@ async def register(user: UserCreate):
 
 @app.post("/api/login")
 async def login(creds: LoginRequest):
-    # SMART LOGIN: Search by Username OR the Email/Mobile field
-    user = await db.users.find_one({
-        "$or": [
-            {"username": creds.username},
-            {"email": creds.username} 
-        ]
-    })
+    # Searches both Username and Email/Mobile field
+    user = await db.users.find_one({"$or": [
+        {"username": creds.username}, 
+        {"email": creds.username}
+    ]})
     
     if not user or not verify_password(creds.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid username/contact or password")
     
-    token = create_access_token({
-        "sub": str(user["_id"]), 
-        "username": user["username"],
-        "role": user.get("role", "user")
-    })
-    
+    token = create_access_token({"sub": str(user["_id"]), "username": user["username"], "role": user.get("role", "user")})
     user_public = fix_id(user)
     user_public.pop("password", None)
-    
     return {"token": token, "user": user_public}
 
 @app.get("/api/users/{id}", response_model=UserPublic)
@@ -181,7 +178,6 @@ async def get_user(id: str):
         user = await db.users.find_one({"_id": ObjectId(id)})
     except:
         user = await db.users.find_one({"id": id})
-        
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return fix_id(user)
@@ -192,48 +188,41 @@ async def update_profile(id: str, updates: dict):
         oid = ObjectId(id)
     except:
         oid = id
-        
     updates.pop("password", None)
     updates.pop("role", None)
     updates.pop("id", None)
     updates.pop("_id", None)
-    
     await db.users.update_one({"_id": oid}, {"$set": updates})
     updated_user = await db.users.find_one({"_id": oid})
-    if not updated_user:
-        raise HTTPException(status_code=404, detail="User not found")
     return fix_id(updated_user)
 
 # ==================================================================
-# 3. REVIEWS
+# 3. REVIEWS & FAVORITES LIST
 # ==================================================================
+
+# Match exactly what the frontend calls to fix 404
+@app.get("/api/reviews/restaurant/{id}", response_model=List[Review])
+async def get_restaurant_reviews_by_path(id: str):
+    reviews = await db.reviews.find({"restaurantId": id}).sort("createdAt", -1).to_list(100)
+    return [fix_id(r) for r in reviews]
 
 @app.post("/api/reviews", response_model=Review)
 async def add_review(review: Review):
     review_dict = review.dict()
     review_dict["createdAt"] = datetime.now().isoformat()
-    
     try:
-        if len(review.userId) > 10: 
-             user = await db.users.find_one({"_id": ObjectId(review.userId)})
-             if user:
-                 review_dict["userFirstName"] = user.get("firstName", "")
-                 review_dict["userAvatar"] = user.get("avatar", "")
-    except:
-        pass
-
+        user = await db.users.find_one({"_id": ObjectId(review.userId)})
+        if user:
+            review_dict["userFirstName"] = user.get("firstName", "")
+            review_dict["userAvatar"] = user.get("avatar", "")
+    except: pass
     new_review = await db.reviews.insert_one(review_dict)
     
-    # Update Restaurant Average Rating
+    # Update average rating
     all_reviews = await db.reviews.find({"restaurantId": review.restaurantId}).to_list(1000)
     if all_reviews:
         avg = sum(r["rating"] for r in all_reviews) / len(all_reviews)
-        try:
-            rid = ObjectId(review.restaurantId)
-            await db.restaurants.update_one({"_id": rid}, {"$set": {"rating": round(avg, 1)}})
-        except:
-            pass 
-
+        await db.restaurants.update_one({"_id": ObjectId(review.restaurantId)}, {"$set": {"rating": round(avg, 1)}})
     created = await db.reviews.find_one({"_id": new_review.inserted_id})
     return fix_id(created)
 
@@ -242,9 +231,26 @@ async def get_restaurant_reviews(id: str):
     reviews = await db.reviews.find({"restaurantId": id}).sort("createdAt", -1).to_list(100)
     return [fix_id(r) for r in reviews]
 
+@app.get("/api/users/{userId}/favorites_list", response_model=List[Restaurant])
+async def get_user_favorites_full(userId: str):
+    favs = await db.favorites.find({"userId": userId}).to_list(100)
+    ids = [f["restaurantId"] for f in favs]
+    restaurants = await db.restaurants.find({"$or": [{"_id": {"$in": [ObjectId(r) for r in ids if len(r)==24]}}, {"id": {"$in": ids}}]}).to_list(100)
+    return [fix_id(r) for r in restaurants]
+
 # ==================================================================
-# 4. ADMIN MODULES
+# 4. ADMIN & REQUESTS MODULES
 # ==================================================================
+
+@app.get("/api/admin/stats", response_model=AdminStats)
+async def get_dashboard_stats():
+    return {
+        "totalUsers": await db.users.count_documents({}),
+        "totalRestaurants": await db.restaurants.count_documents({}),
+        "totalReviews": await db.reviews.count_documents({}),
+        "pendingRequests": await db.restaurant_requests.count_documents({"status": "pending"}),
+        "unreadMessages": await db.contact_messages.count_documents({"status": "unread"})
+    }
 
 @app.post("/api/restaurants/request", response_model=RestaurantRequest)
 async def create_restaurant_request(req: RestaurantRequest):
@@ -264,41 +270,19 @@ async def get_restaurant_requests(status: Optional[str] = None):
 @app.patch("/api/admin/requests/{id}")
 async def update_request_status(id: str, payload: dict):
     new_status = payload.get("status")
-    try:
-        oid = ObjectId(id)
-    except:
-        oid = id
-    
+    oid = ObjectId(id) if len(id) == 24 else id
     req = await db.restaurant_requests.find_one({"_id": oid})
-    if not req:
-        raise HTTPException(status_code=404, detail="Request not found")
-
+    if not req: raise HTTPException(status_code=404, detail="Request not found")
     await db.restaurant_requests.update_one({"_id": oid}, {"$set": {"status": new_status}})
     
-    if new_status == "approved" and req["status"] != "approved":
+    if new_status == "approved":
         new_restaurant = {
-            "name": req["restaurantName"],
-            "cuisine": req["cuisine"],
-            "rating": 0,
-            "location": req["location"],
-            "budgetRange": req["budgetRange"],
-            "type": req["type"],
-            "paymentMode": req["paymentMode"],
-            "sides": req["sides"],
-            "profileImage": req.get("profileImage"),
-            "menuImages": req.get("menuImages", [])
+            "name": req["restaurantName"], "cuisine": req["cuisine"], "rating": 0,
+            "location": req["location"], "budgetRange": req["budgetRange"],
+            "sides": req["sides"], "profileImage": req.get("profileImage")
         }
         await db.restaurants.insert_one(new_restaurant)
     return {"success": True}
-
-@app.post("/api/contact", response_model=ContactMessage)
-async def send_contact_message(msg: ContactMessage):
-    msg_dict = msg.dict()
-    msg_dict["submittedAt"] = datetime.now().isoformat()
-    msg_dict["status"] = "unread"
-    new_msg = await db.contact_messages.insert_one(msg_dict)
-    created = await db.contact_messages.find_one({"_id": new_msg.inserted_id})
-    return fix_id(created)
 
 @app.get("/api/admin/inbox", response_model=List[ContactMessage])
 async def get_inbox_messages(status: Optional[str] = None):
@@ -306,12 +290,12 @@ async def get_inbox_messages(status: Optional[str] = None):
     msgs = await db.contact_messages.find(query).sort("submittedAt", -1).to_list(100)
     return [fix_id(m) for m in msgs]
 
-@app.get("/api/admin/stats", response_model=AdminStats)
-async def get_dashboard_stats():
-    return {
-        "totalUsers": await db.users.count_documents({}),
-        "totalRestaurants": await db.restaurants.count_documents({}),
-        "totalReviews": await db.reviews.count_documents({}),
-        "pendingRequests": await db.restaurant_requests.count_documents({"status": "pending"}),
-        "unreadMessages": await db.contact_messages.count_documents({"status": "unread"})
-    }
+@app.delete("/api/admin/restaurants/{id}")
+async def delete_restaurant(id: str):
+    await db.restaurants.delete_one({"_id": ObjectId(id) if len(id)==24 else id})
+    return {"success": True}
+
+@app.delete("/api/reviews/{id}")
+async def delete_review(id: str):
+    await db.reviews.delete_one({"_id": ObjectId(id) if len(id) == 24 else id})
+    return {"success": True}

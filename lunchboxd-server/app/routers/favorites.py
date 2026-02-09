@@ -1,43 +1,32 @@
 from fastapi import APIRouter, HTTPException
 from app.models import Favorite
+from app.database import db
 
 router = APIRouter(prefix="/api/favorites", tags=["favorites"])
 
-# Mock storage (replace with DB later)
-favorites_db: list[Favorite] = []
-
-
 @router.post("")
-def add_favorite(favorite: Favorite):
-    if any(
-        f.userId == favorite.userId and f.restaurantId == favorite.restaurantId
-        for f in favorites_db
-    ):
-        raise HTTPException(status_code=400, detail="Already favorited")
-
-    favorites_db.append(favorite)
-    return {"success": True, "message": "Restaurant added to favorites"}
-
-
-@router.delete("/{userId}/{restaurantId}")
-def remove_favorite(userId: str, restaurantId: str):
-    global favorites_db
-    favorites_db = [
-        f for f in favorites_db
-        if not (f.userId == userId and f.restaurantId == restaurantId)
-    ]
-    return {"success": True, "message": "Favorite removed"}
-
+async def toggle_favorite(fav: Favorite):
+    # Check if already exists to "toggle" it off
+    existing = await db.favorites.find_one({"userId": fav.userId, "restaurantId": fav.restaurantId})
+    
+    if existing:
+        await db.favorites.delete_one({"_id": existing["_id"]})
+        return {"status": "removed", "isFavorite": False}
+    
+    await db.favorites.insert_one(fav.dict())
+    return {"status": "added", "isFavorite": True}
 
 @router.get("/{userId}")
-def get_user_favorites(userId: str):
-    return [f for f in favorites_db if f.userId == userId]
-
+async def get_user_favorites(userId: str):
+    fav_links = await db.favorites.find({"userId": userId}).to_list(100)
+    return fav_links
 
 @router.get("/{userId}/{restaurantId}")
-def check_favorite(userId: str, restaurantId: str):
-    is_favorite = any(
-        f.userId == userId and f.restaurantId == restaurantId
-        for f in favorites_db
-    )
-    return {"isFavorite": is_favorite}
+async def check_favorite(userId: str, restaurantId: str):
+    existing = await db.favorites.find_one({"userId": userId, "restaurantId": restaurantId})
+    return {"isFavorite": bool(existing)}
+
+@router.delete("/{userId}/{restaurantId}")
+async def remove_favorite(userId: str, restaurantId: str):
+    await db.favorites.delete_one({"userId": userId, "restaurantId": restaurantId})
+    return {"success": True, "message": "Favorite removed"}

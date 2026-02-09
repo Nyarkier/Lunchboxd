@@ -1,21 +1,21 @@
 # app/database.py
-import motor.motor_asyncio
 import os
+from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 
-# Load the .env file
 load_dotenv()
 
-# Connect to MongoDB
-client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("MONGODB_URL"))
-db = client[os.getenv("DB_NAME")]
+# Get the URI from your .env file
+MONGODB_URL = os.getenv("MONGODB_URL")
 
-# --- THE MISSING PART ---
-def fix_id(doc):
-    """
-    Helper to convert MongoDB's '_id' (ObjectId) to 'id' (String).
-    """
-    if doc:
-        # Convert _id to string and save it as 'id'
-        doc["id"] = str(doc.pop("_id"))
-    return doc
+# Create the client
+client = AsyncIOMotorClient(MONGODB_URL)
+
+# Select your database name (Lunchboxd)
+db = client.Lunchboxd 
+
+# Helper function to convert MongoDB's _id to a string 'id' for the frontend
+def fix_id(obj):
+    if obj and "_id" in obj:
+        obj["id"] = str(obj["_id"])
+    return obj
