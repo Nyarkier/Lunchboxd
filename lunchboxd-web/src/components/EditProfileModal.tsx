@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Camera, Eye, EyeOff } from "lucide-react";
+import { X, Camera, Eye, EyeOff, User } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 
 interface EditProfileModalProps {
@@ -28,6 +28,7 @@ export function EditProfileModal({
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showPasswords, setShowPasswords] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
@@ -152,14 +153,17 @@ export function EditProfileModal({
 
           {/* Avatar Section */}
           <div className="flex flex-col items-center gap-3 pb-4 border-b border-gray-200">
-            <img
-              src={
-                formData.avatar ||
-                `https://i.pravatar.cc/150?u=${user?.id || "default"}`
-              }
-              alt="Profile"
-              className="w-20 h-20 rounded-full object-cover border-4 border-[#2F532F]"
-            />
+            {formData.avatar ? (
+              <img
+                src={formData.avatar}
+                alt="Profile"
+                className="w-20 h-20 rounded-full object-cover border-4 border-[#2F532F]"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full border-4 border-[#2F532F] bg-gray-200 flex items-center justify-center">
+                <User size={32} className="text-gray-500" />
+              </div>
+            )}
             <label className="flex items-center gap-2 bg-[#2F532F] text-white px-4 py-2 rounded-full cursor-pointer hover:bg-[#1a331a] transition-colors text-sm font-medium">
               <Camera size={16} />
               Change Photo
@@ -219,63 +223,87 @@ export function EditProfileModal({
 
           {/* Password Section */}
           <div className="border-t border-gray-200 pt-4">
-            <p className="text-sm font-semibold text-gray-700 mb-3">
-              Change Password (Optional)
-            </p>
+            {/* Change Password Checkbox */}
+            <label className="flex items-center gap-3 cursor-pointer mb-3">
+              <input
+                type="checkbox"
+                checked={showChangePassword}
+                onChange={(e) => {
+                  setShowChangePassword(e.target.checked);
+                  if (!e.target.checked) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      currentPassword: "",
+                      newPassword: "",
+                      confirmPassword: "",
+                    }));
+                  }
+                }}
+                className="w-5 h-5 rounded border-gray-300 text-[#2F532F] focus:ring-[#2F532F]"
+              />
+              <span className="text-sm font-semibold text-gray-700">
+                Change Password
+              </span>
+            </label>
 
-            {/* Current Password */}
-            <div className="mb-3">
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
-                Current Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPasswords ? "text" : "password"}
-                  name="currentPassword"
-                  value={formData.currentPassword}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F532F] focus:border-transparent outline-none transition pr-10"
-                  placeholder="Leave empty to skip"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPasswords(!showPasswords)}
-                  className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
-                >
-                  {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
+            {/* Password Fields - Only show when checkbox is checked */}
+            {showChangePassword && (
+              <div className="space-y-3 mt-3 p-3 bg-gray-50 rounded-lg">
+                {/* Current Password */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                    Current Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPasswords ? "text" : "password"}
+                      name="currentPassword"
+                      value={formData.currentPassword}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F532F] focus:border-transparent outline-none transition pr-10"
+                      placeholder="Enter current password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswords(!showPasswords)}
+                      className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* New Password */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                    New Password
+                  </label>
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    name="newPassword"
+                    value={formData.newPassword}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F532F] focus:border-transparent outline-none transition"
+                    placeholder="Enter new password"
+                  />
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type={showPasswords ? "text" : "password"}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F532F] focus:border-transparent outline-none transition"
+                    placeholder="Confirm new password"
+                  />
+                </div>
               </div>
-            </div>
-
-            {/* New Password */}
-            <div className="mb-3">
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
-                New Password
-              </label>
-              <input
-                type={showPasswords ? "text" : "password"}
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F532F] focus:border-transparent outline-none transition"
-                placeholder="Leave empty to skip"
-              />
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
-                Confirm New Password
-              </label>
-              <input
-                type={showPasswords ? "text" : "password"}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F532F] focus:border-transparent outline-none transition"
-                placeholder="Leave empty to skip"
-              />
-            </div>
+            )}
           </div>
 
           {/* Submit Buttons */}

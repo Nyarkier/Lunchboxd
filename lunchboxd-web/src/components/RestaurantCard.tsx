@@ -120,7 +120,7 @@ function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <span className="inline-block bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
               {restaurant.cuisine}
             </span>
-            {restaurant.rating && (
+            {restaurant.rating > 0 && (
               <span className="inline-block bg-gray-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
                 {restaurant.rating}★
               </span>

@@ -15,6 +15,12 @@ const getAuthHeaders = () => {
   };
 };
 
+// Helper to transform backend review data (MongoDB _id to id)
+const transformReview = (r: Record<string, unknown>): Review => ({
+  ...r,
+  id: (r._id as string) || (r.id as string),
+} as Review);
+
 // Store reviews in localStorage for persistence (mock mode)
 const REVIEWS_STORAGE_KEY = "lunchboxd_reviews";
 
@@ -92,7 +98,7 @@ export const addReview = async (
   }
 
   const data = await response.json();
-  return data.review;
+  return transformReview(data.review);
 };
 
 export const getRestaurantReviews = async (
@@ -103,14 +109,28 @@ export const getRestaurantReviews = async (
     return reviews.filter((r) => r.restaurantId === restaurantId);
   }
 
-  const response = await fetch(
-    `${API_BASE_URL}/reviews/restaurant/${restaurantId}`,
-  );
-  if (!response.ok) {
-    return [];
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/reviews/restaurant/${restaurantId}`,
+    );
+    if (!response.ok) {
+      console.warn(
+        "Failed to fetch reviews from API, falling back to mock data",
+      );
+      const reviews = getReviewsFromBackend();
+      return reviews.filter((r) => r.restaurantId === restaurantId);
+    }
+    const data = await response.json();
+    const reviews = data.reviews || [];
+    return reviews.map(transformReview);
+  } catch (error) {
+    console.warn(
+      "Failed to fetch reviews from API, falling back to mock data:",
+      error,
+    );
+    const reviews = getReviewsFromBackend();
+    return reviews.filter((r) => r.restaurantId === restaurantId);
   }
-  const data = await response.json();
-  return data.reviews || [];
 };
 
 export const getUserReviews = async (userId: string): Promise<Review[]> => {
@@ -119,13 +139,27 @@ export const getUserReviews = async (userId: string): Promise<Review[]> => {
     return reviews.filter((r) => r.userId === userId);
   }
 
-  // Backend doesn't have a user reviews endpoint, so we get all and filter
-  const response = await fetch(`${API_BASE_URL}/reviews`);
-  if (!response.ok) {
-    return [];
+  try {
+    // Backend doesn't have a user reviews endpoint, so we get all and filter
+    const response = await fetch(`${API_BASE_URL}/reviews`);
+    if (!response.ok) {
+      console.warn(
+        "Failed to fetch user reviews from API, falling back to mock data",
+      );
+      const reviews = getReviewsFromBackend();
+      return reviews.filter((r) => r.userId === userId);
+    }
+    const data = await response.json();
+    const reviews = (data.reviews || []).map(transformReview);
+    return reviews.filter((r: Review) => r.userId === userId);
+  } catch (error) {
+    console.warn(
+      "Failed to fetch user reviews from API, falling back to mock data:",
+      error,
+    );
+    const reviews = getReviewsFromBackend();
+    return reviews.filter((r) => r.userId === userId);
   }
-  const data = await response.json();
-  return (data.reviews || []).filter((r: Review) => r.userId === userId);
 };
 
 export const getReviewsByUserId = async (userId: string): Promise<Review[]> => {

@@ -181,7 +181,7 @@ export const updateUserPassword = async (
   return true;
 };
 
-export const getUserAvatar = (user: User | null): string => {
-  if (!user) return "https://i.pravatar.cc/150?u=default";
-  return user.avatar || `https://i.pravatar.cc/150?u=${user.id}`;
+export const getUserAvatar = (user: User | null): string | null => {
+  if (!user) return null;
+  return user.avatar || null;
 };

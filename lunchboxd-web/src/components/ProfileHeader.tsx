@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, LogOut, Edit } from "lucide-react";
+import { Heart, MessageCircle, LogOut, Edit, User } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 
 interface ProfileHeaderProps {
@@ -22,14 +22,17 @@ export function ProfileHeader({
         <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
           {/* Profile Avatar */}
           <div className="shrink-0">
-            <img
-              src={
-                (user?.avatar as string | null | undefined) ||
-                `https://i.pravatar.cc/150?u=${user?.id || "default"}`
-              }
-              alt={`${user?.firstName} ${user?.lastName}`}
-              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
-            />
+            {user?.avatar ? (
+              <img
+                src={user.avatar as string}
+                alt={`${user?.firstName} ${user?.lastName}`}
+                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
+              />
+            ) : (
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg bg-gray-300 flex items-center justify-center">
+                <User size={48} className="text-gray-500" />
+              </div>
+            )}
           </div>
 
           {/* Profile Info */}

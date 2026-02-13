@@ -429,7 +429,9 @@ export const getAllReviews = async (): Promise<Review[]> => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/reviews`);
+    const response = await fetch(`${API_BASE_URL}/reviews`, {
+      headers: getAuthHeaders(),
+    });
     if (!response.ok) {
       return [];
     }

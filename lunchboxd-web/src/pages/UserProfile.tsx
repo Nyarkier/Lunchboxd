@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Header } from "../layouts/Header";
 import { Footer } from "../layouts/Footer";
-import { MessageCircle, ArrowLeft } from "lucide-react";
+import { MessageCircle, ArrowLeft, User as UserIcon } from "lucide-react";
 import { YourFavorites } from "../components/YourFavorites";
 import { YourReviews } from "../components/YourReviews";
 import { getUserById } from "../services/authService";
@@ -52,7 +52,7 @@ export function UserProfile() {
             restaurant: restaurants.find((r) => r.id === review.restaurantId),
           }))
           .filter(
-            (review) => review.restaurant !== undefined
+            (review) => review.restaurant !== undefined,
           ) as ReviewWithRestaurant[];
         setReviews(reviewsWithRestaurants);
         setReviewCount(reviewsWithRestaurants.length);
@@ -129,14 +129,17 @@ export function UserProfile() {
               <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
                 {/* Profile Avatar */}
                 <div className="shrink-0">
-                  <img
-                    src={
-                      (profile?.avatar as string | null | undefined) ||
-                      `https://i.pravatar.cc/150?u=${profile?.id || "default"}`
-                    }
-                    alt={`${profile?.firstName} ${profile?.lastName}`}
-                    className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
-                  />
+                  {profile?.avatar ? (
+                    <img
+                      src={profile.avatar as string}
+                      alt={`${profile?.firstName} ${profile?.lastName}`}
+                      className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg bg-gray-300 flex items-center justify-center">
+                      <UserIcon size={48} className="text-gray-500" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Profile Info */}

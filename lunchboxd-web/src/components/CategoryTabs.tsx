@@ -11,12 +11,12 @@ interface CategoryTabsProps {
 }
 
 const categories = [
-  { id: "Rice Meal", name: "Rice Meal", emoji: riceMeal },
-  { id: "Cafe", name: "Cafe", emoji: cafe },
-  { id: "Chicken", name: "Chicken", emoji: chicken },
-  { id: "Fast Food", name: "Fast Food", emoji: fastFood },
-  { id: "Noodles", name: "Noodles", emoji: noodles },
-  { id: "Bread", name: "Bread", emoji: breads },
+  { id: "rice meal", name: "Rice Meal", emoji: riceMeal },
+  { id: "cafe", name: "Cafe", emoji: cafe },
+  { id: "chicken", name: "Chicken", emoji: chicken },
+  { id: "fast food", name: "Fast Food", emoji: fastFood },
+  { id: "noodles", name: "Noodles", emoji: noodles },
+  { id: "bread", name: "Bread", emoji: breads },
 ];
 
 function CategoryTabs({

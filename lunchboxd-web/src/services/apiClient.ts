@@ -1,9 +1,14 @@
 // API Client Service - Handles both mock and real API calls
-import type { Restaurant, FilterOptions, FilterCriteria } from "../types/types";
+import type {
+  Restaurant,
+  FilterOptions,
+  FilterCriteria,
+  Cuisine,
+} from "../types/types";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === "false";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 
 // Simulate network delay for mock data
 const MOCK_DELAY = 300; // milliseconds
@@ -57,6 +62,7 @@ import mockBackendData from "../../mock-backend/data.json";
 
 const mockRestaurants: Restaurant[] = mockBackendData.restaurants.map((r) => ({
   ...r,
+  cuisine: r.cuisine as Cuisine,
   sides: r.sides as
     | "Main Gate"
     | "Gate Six"
@@ -156,14 +162,20 @@ async function fetchRestaurantsAPI(
     });
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
+      console.warn(
+        `API error: ${response.statusText}, falling back to mock data`,
+      );
+      return fetchRestaurantsMock(criteria);
     }
 
     const data = await response.json();
     return data.restaurants || data; // Handle different response formats
   } catch (error) {
-    console.error("Failed to fetch restaurants from API:", error);
-    throw error;
+    console.warn(
+      "Failed to fetch restaurants from API, falling back to mock data:",
+      error,
+    );
+    return fetchRestaurantsMock(criteria);
   }
 }
 
@@ -182,15 +194,25 @@ async function fetchRestaurantByIdAPI(id: string): Promise<Restaurant | null> {
     });
 
     if (!response.ok) {
-      if (response.status === 404) return null;
-      throw new Error(`API error: ${response.statusText}`);
+      if (response.status === 404) {
+        // Try falling back to mock data
+        console.warn(`Restaurant ${id} not found in API, trying mock data`);
+        return fetchRestaurantByIdMock(id);
+      }
+      console.warn(
+        `API error: ${response.statusText}, falling back to mock data`,
+      );
+      return fetchRestaurantByIdMock(id);
     }
 
     const data = await response.json();
     return data.restaurant || data; // Handle different response formats
   } catch (error) {
-    console.error(`Failed to fetch restaurant ${id} from API:`, error);
-    throw error;
+    console.warn(
+      `Failed to fetch restaurant ${id} from API, falling back to mock data:`,
+      error,
+    );
+    return fetchRestaurantByIdMock(id);
   }
 }
 
@@ -209,13 +231,19 @@ async function fetchFilterOptionsAPI(): Promise<FilterOptions> {
     });
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
+      console.warn(
+        `API error: ${response.statusText}, falling back to mock data`,
+      );
+      return fetchFilterOptionsMock();
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Failed to fetch filter options from API:", error);
-    throw error;
+    console.warn(
+      "Failed to fetch filter options from API, falling back to mock data:",
+      error,
+    );
+    return fetchFilterOptionsMock();
   }
 }

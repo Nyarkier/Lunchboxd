@@ -40,19 +40,18 @@ export const addFavorite = async (
   userId: string,
   restaurantId: string,
 ): Promise<boolean> => {
+  // Always save to localStorage for offline support
+  const favorites = getFavoritesFromStorage();
+  const exists = favorites.find(
+    (f) => f.userId === userId && f.restaurantId === restaurantId,
+  );
+  if (!exists) {
+    favorites.push({ userId, restaurantId });
+    saveFavoritesToStorage(favorites);
+  }
+
   if (USE_MOCK) {
-    const favorites = getFavoritesFromStorage();
-    const exists = favorites.find(
-      (f) => f.userId === userId && f.restaurantId === restaurantId,
-    );
-
-    if (!exists) {
-      favorites.push({ userId, restaurantId });
-      saveFavoritesToStorage(favorites);
-      return true;
-    }
-
-    return false;
+    return !exists;
   }
 
   try {
@@ -64,8 +63,8 @@ export const addFavorite = async (
 
     return response.ok;
   } catch (error) {
-    console.error("Failed to add favorite:", error);
-    return false;
+    console.warn("Failed to sync favorite with API, saved locally:", error);
+    return true; // Return true since we saved locally
   }
 };
 
@@ -73,19 +72,18 @@ export const removeFavorite = async (
   userId: string,
   restaurantId: string,
 ): Promise<boolean> => {
+  // Always remove from localStorage for offline support
+  const favorites = getFavoritesFromStorage();
+  const index = favorites.findIndex(
+    (f) => f.userId === userId && f.restaurantId === restaurantId,
+  );
+  if (index > -1) {
+    favorites.splice(index, 1);
+    saveFavoritesToStorage(favorites);
+  }
+
   if (USE_MOCK) {
-    const favorites = getFavoritesFromStorage();
-    const index = favorites.findIndex(
-      (f) => f.userId === userId && f.restaurantId === restaurantId,
-    );
-
-    if (index > -1) {
-      favorites.splice(index, 1);
-      saveFavoritesToStorage(favorites);
-      return true;
-    }
-
-    return false;
+    return index > -1;
   }
 
   try {
@@ -99,8 +97,8 @@ export const removeFavorite = async (
 
     return response.ok;
   } catch (error) {
-    console.error("Failed to remove favorite:", error);
-    return false;
+    console.warn("Failed to sync unfavorite with API, removed locally:", error);
+    return true; // Return true since we removed locally
   }
 };
 
@@ -121,7 +119,12 @@ export const isFavorite = async (
     });
 
     if (!response.ok) {
-      return false;
+      // Fallback to localStorage
+      console.warn("Failed to check favorite from API, using local storage");
+      const favorites = getFavoritesFromStorage();
+      return !!favorites.find(
+        (f) => f.userId === userId && f.restaurantId === restaurantId,
+      );
     }
 
     const data = await response.json();
@@ -133,8 +136,15 @@ export const isFavorite = async (
           : f.restaurantId) === restaurantId,
     );
   } catch (error) {
-    console.error("Failed to check favorite:", error);
-    return false;
+    console.warn(
+      "Failed to check favorite from API, using local storage:",
+      error,
+    );
+    // Fallback to localStorage
+    const favorites = getFavoritesFromStorage();
+    return !!favorites.find(
+      (f) => f.userId === userId && f.restaurantId === restaurantId,
+    );
   }
 };
 
@@ -157,7 +167,14 @@ export const getUserFavorites = async (
     });
 
     if (!response.ok) {
-      return [];
+      console.warn(
+        "Failed to get user favorites from API, using local storage",
+      );
+      const favorites = getFavoritesFromStorage();
+      const userFavoriteIds = favorites
+        .filter((f) => f.userId === userId)
+        .map((f) => f.restaurantId);
+      return restaurants.filter((r) => userFavoriteIds.includes(r.id));
     }
 
     const data = await response.json();
@@ -166,8 +183,16 @@ export const getUserFavorites = async (
       (f: { restaurantId: Restaurant }) => f.restaurantId,
     );
   } catch (error) {
-    console.error("Failed to get user favorites:", error);
-    return [];
+    console.warn(
+      "Failed to get user favorites from API, using local storage:",
+      error,
+    );
+    // Fallback to localStorage
+    const favorites = getFavoritesFromStorage();
+    const userFavoriteIds = favorites
+      .filter((f) => f.userId === userId)
+      .map((f) => f.restaurantId);
+    return restaurants.filter((r) => userFavoriteIds.includes(r.id));
   }
 };
 
